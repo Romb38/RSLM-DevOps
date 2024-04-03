@@ -3,7 +3,7 @@ name: Run JUnit Tests and Code Coverage
 on:
   push:
     branches:
-      - AddingCodeCover
+      - MavenRepoCompiler
 
 jobs:
   run-tests:
