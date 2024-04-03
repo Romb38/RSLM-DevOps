@@ -20,6 +20,6 @@ jobs:
           distribution: 'adopt'
 
       - name: Build and Publish to GitHub Packages
-        run: mvn deploy -Dmaven.repo.local=./.m2/repository
+        run: mvn deploy -X -D maven.repo.local=./.m2/repository
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
