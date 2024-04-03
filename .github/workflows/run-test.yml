@@ -30,6 +30,7 @@ jobs:
           fi
 
       - name: Upload code coverage report
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
@@ -41,6 +42,12 @@ jobs:
           name: test-results
           path: target/surefire-reports
 
+      - name: Report failure
+        if: failure()
+        run: |
+          #! /bin/bash
+          echo "Error: Code coverage is less than 80%" > error-report.txt
+
   verify:
     runs-on: ubuntu-latest
     needs: test-and-coverage
@@ -48,4 +55,3 @@ jobs:
       - name: Check if tests passed
         if: ${{ failure() }}
         run: exit 1
-
