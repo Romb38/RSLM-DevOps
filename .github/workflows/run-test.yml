@@ -26,8 +26,14 @@ jobs:
           echo "Code coverage is $coverage%"
           if (( $(echo "$coverage < 80.0" | bc -l) )); then
             echo "Code coverage is less than 80%" > error-report.txt
-            exit 1
           fi
+
+      - name: Upload error report as artifact
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: error-report
+          path: error-report.txt
 
       - name: Upload code coverage report
         if: success()
@@ -49,3 +55,4 @@ jobs:
       - name: Check if tests passed
         if: ${{ failure() }}
         run: exit 1
+
