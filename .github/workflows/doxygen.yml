@@ -1,9 +1,9 @@
-name: Generate Documentation with Doxygen
+name: Generate Documentation and Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - doxygen  # Modifier si nécessaire pour la branche de votre choix
+      - main  # Modifier si nécessaire pour la branche de votre choix
 
 jobs:
   build:
@@ -16,3 +16,11 @@ jobs:
       - name: Run Doxygen
         run: |
           doxygen Doxyfile
+      - name: Add generated files to commit
+        run: |
+          git add .
+          git diff --quiet && git diff --staged --quiet || git commit -m "Generate documentation with Doxygen"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
