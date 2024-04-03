@@ -1,9 +1,7 @@
 name: Run JUnit Tests and Code Coverage
 
 on:
-  push:
-    branches:
-      - AddingCodeCover
+  push
 
 jobs:
   test-and-coverage:
