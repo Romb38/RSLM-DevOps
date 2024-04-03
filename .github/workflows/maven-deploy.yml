@@ -19,11 +19,6 @@ jobs:
           java-version: 21
           distribution: 'adopt'
 
-      - name: Add write:packages permission to GITHUB_TOKEN
-        run: echo "SUPER_SECRET_VALUE" >> $GITHUB_ENV
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Publish package
         run: mvn --batch-mode deploy
         env:
