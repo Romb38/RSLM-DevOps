@@ -39,7 +39,13 @@
         </plugins>
     </build>
 
-
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Romb38 Maven Packages</name>
+            <url>https://maven.pkg.github.com/Romb38/RSLM-DevOps</url>
+        </repository>
+    </distributionManagement>
 
     <!-- [MYCODE] Romb38 -->
     <dependencies>
