@@ -1,0 +1,19 @@
+name: Run JUnit Tests
+
+on:
+  push:
+    branches:
+      - JUnit-testing  # Modifier si nécessaire pour la branche de votre choix
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+      - name: Run tests with Maven
+        run: mvn test
