@@ -5,6 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Scanner;
 
 public class Main {
+
+    /**
+     * @brief Main method
+     *
+     * @details This method is the entry point of the program
+     */
     public static void main(String[] args) {
         System.out.println("Hello world! And root");
         System.out.println("Enter your username: ");
