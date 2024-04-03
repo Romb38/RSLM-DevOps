@@ -1,0 +1,16 @@
+name: Generate Documentation with Doxygen
+
+on:
+  push:
+    branches:
+      - doxygen  # Modifier si nécessaire pour la branche de votre choix
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Run Doxygen
+        run: |
+          doxygen Doxyfile
