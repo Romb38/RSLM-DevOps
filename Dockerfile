@@ -1,5 +1,5 @@
 # Utiliser une base d'image Java (choisir une version appropriée)
-FROM openjdk:21-jre-slim
+FROM ubuntu:latest
 
 # Copier le fichier JAR compilé dans l'image
 COPY target/project_devops_2024.jar /usr/app/
