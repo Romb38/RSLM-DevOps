@@ -22,4 +22,4 @@ jobs:
       - name: Build and Publish to GitHub Packages
         run: mvn deploy -Dmaven.repo.local=./.m2/repository
         env:
-          GITHUB_TOKEN: ${{ var.OATH }}
+          GITHUB_TOKEN: ${{ vars.OATH }}
