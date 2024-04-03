@@ -1,4 +1,4 @@
-FROM openjdk:21
+FROM openjdk:21-slim
 
 # Copier le fichier JAR compilé dans l'image
 COPY target/project_devops_2024.jar /usr/app/
