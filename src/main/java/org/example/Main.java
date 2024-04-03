@@ -18,7 +18,8 @@ import java.util.*;
 public class Main {
 
     /**
-     * @brief Main function
+     * @brief Méthode principale
+     *
      * @details This method is the entry point of the program
      */
     public static void main(String[] args) throws IOException {
