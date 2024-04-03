@@ -13,10 +13,4 @@ public class UnitTest {
         // Assertion pour vérifier si 1 est égal à 1
         assertEquals(1, 1);
     }
-
-    @Test
-    public void testInequality() {
-        // Assertion pour vérifier si 1 est égal à 1
-        assertEquals(2, 1);
-    }
 }
