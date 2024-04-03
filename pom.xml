@@ -32,7 +32,6 @@
 
     <!-- [MYCODE] Romb38 -->
     <dependencies>
-
         <!-- JUnit -->
         <dependency>
             <groupId>junit</groupId>
