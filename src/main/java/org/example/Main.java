@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        System.out.println("Hello world! And root");
         System.out.println("Enter your username: ");
         Scanner scanner = new Scanner(System.in);
         String username = scanner.nextLine();
