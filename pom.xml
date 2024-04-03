@@ -42,7 +42,7 @@
     <distributionManagement>
         <repository>
             <id>github</id>
-            <name>GitHub Romb38 Maven Packages</name>
+            <name>GitHub Packages</name>
             <url>https://maven.pkg.github.com/Romb38/RSLM-DevOps</url>
         </repository>
     </distributionManagement>
