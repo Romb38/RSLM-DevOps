@@ -25,7 +25,7 @@ jobs:
           coverage=$(mvn jacoco:report | grep -Po 'Line Coverage: \K[0-9.]+(?=%)')
           echo "Code coverage is $coverage%"
           if (( $(echo "$coverage < 80.0" | bc -l) )); then
-            echo "Code coverage is less than 80%"
+            echo "Code coverage is less than 80%" > error-report.txt
             exit 1
           fi
 
@@ -41,12 +41,6 @@ jobs:
         with:
           name: test-results
           path: target/surefire-reports
-
-      - name: Report failure
-        if: failure()
-        run: |
-          #! /bin/bash
-          echo "Error: Code coverage is less than 80%" > error-report.txt
 
   verify:
     runs-on: ubuntu-latest
