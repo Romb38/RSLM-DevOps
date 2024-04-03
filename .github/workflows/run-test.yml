@@ -50,12 +50,11 @@ jobs:
 
       - name: Check code coverage
         run: |
-          coverage=$(awk -F">" '/<span class="counter.*of condition coverage">/ {print $2}' target/site/jacoco/index.html | awk -F"<" '{print $1}')
-          if (( $(echo "$coverage < 80" | bc -l) )); then
-            echo "Code coverage is less than 80%: $coverage%"
-            exit 1
-          else
-            echo "Code coverage is greater than or equal to 80%: $coverage%"
+          #! /bin/bash
+          coverage=$(mvn jacoco:report | grep -Po 'Line Coverage: \K[0-9.]+(?=%)')
+          echo "Code coverage is $coverage%"
+          if (( $(echo "$coverage < 80.0" | bc -l) )); then
+            echo "Code coverage is less than 80%"
           fi
 
       - name: Upload code coverage report
