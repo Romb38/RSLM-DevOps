@@ -8,7 +8,7 @@ public class UnitTest {
      *
      * @details Cette méthode permet de tester si 1 est égal à 1
      */
-    @Test
+ @Test
     public void testEquality() {
         // Assertion pour vérifier si 1 est égal à 1
         assertEquals(1, 1);
