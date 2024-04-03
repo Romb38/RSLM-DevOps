@@ -25,7 +25,7 @@ jobs:
           coverage=$(mvn jacoco:report | grep -Po 'Line Coverage: \K[0-9.]+(?=%)')
           echo "Code coverage is $coverage%"
           if (( $(echo "$coverage < 80.0" | bc -l) )); then
-            echo "Code coverage is less than 80%" > /target/error-report.txt
+            echo "Code coverage is less than 80%" > target/error-report.txt
           fi
 
       - name: Upload error report as artifact
@@ -55,4 +55,3 @@ jobs:
       - name: Check if tests passed
         if: ${{ failure() }}
         run: exit 1
-
