@@ -3,7 +3,7 @@ name: Generate Documentation and Deploy to GitHub Pages
 on:
   push:
     branches:
-      - doxygen  # Modifier si nécessaire pour la branche de votre choix
+      - main  # Modifier si nécessaire pour la branche de votre choix
 
 jobs:
   build:
@@ -16,6 +16,10 @@ jobs:
       - name: Run Doxygen
         run: |
           doxygen Doxyfile
+      - name: Set up Git
+        run: |
+          git config --global user.email "r.barbier38@gmail.com"
+          git config --global user.name "Romb38"
       - name: Add generated files to commit
         run: |
           git add .
