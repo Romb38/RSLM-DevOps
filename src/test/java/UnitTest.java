@@ -14,9 +14,4 @@ public class UnitTest {
         assertEquals(1, 1);
     }
 
-    @Test
-    public void testInquality() {
-        // Assertion pour vérifier si 1 est égal à 1
-        assertEquals(1, 1);
-    }
 }
