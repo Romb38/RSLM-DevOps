@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: 21
+          distribution: 'adopt'
 
       - name: Add write:packages permission to GITHUB_TOKEN
         run: echo "SUPER_SECRET_VALUE" >> $GITHUB_ENV
