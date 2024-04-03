@@ -3,7 +3,7 @@ name: Run JUnit Tests
 on:
   push:
     branches:
-      - JUnit-testing  # Modifier si nécessaire pour la branche de votre choix
+      - main  # Modifier si nécessaire pour la branche de votre choix
 
 jobs:
   test:
