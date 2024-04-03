@@ -3,7 +3,7 @@ name: Run JUnit Tests
 on:
   push:
     branches:
-      - JUnit-testing  # Modifier si nécessaire pour la branche de votre choix
+      - main  # Modifier si nécessaire pour la branche de votre choix
 
 jobs:
   test:
@@ -15,5 +15,6 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: 11
+          distribution: 'adopt'  # Spécifiez la distribution de Java, par exemple 'adopt', 'temurin', etc.
       - name: Run tests with Maven
         run: mvn test
