@@ -17,7 +17,7 @@ jobs:
           java-version: 21
           distribution: 'adopt'  # Spécifiez la distribution de Java, par exemple 'adopt', 'temurin', etc.
       - name: Run tests with Maven
-        run: mvn test
+        run: mvn clean test jacoco:report
 
   verify:
     runs-on: ubuntu-latest
