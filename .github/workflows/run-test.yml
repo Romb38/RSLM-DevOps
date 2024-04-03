@@ -3,7 +3,7 @@ name: Run JUnit Tests
 on:
   push:
     branches:
-      - AddingCodeCoverage
+      - AddingCodeCover
 
 jobs:
   test:
