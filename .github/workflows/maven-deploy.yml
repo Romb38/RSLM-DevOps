@@ -3,7 +3,7 @@ name: Build and Publish to GitHub Packages
 on:
   push:
     branches:
-      - master
+      - MavenRepoCompiler
 
 jobs:
   build-and-publish:
