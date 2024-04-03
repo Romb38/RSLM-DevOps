@@ -10,9 +10,9 @@ name: CI/CD with Maven devops project
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "continuous_deployment" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "continuous_deployment" ]
 
 jobs:
   build:

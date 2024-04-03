@@ -8,4 +8,4 @@ COPY target/project_devops_2024.jar /usr/app/
 WORKDIR /usr/app
 
 # Commande pour exécuter l'application
-CMD ["java", "-jar", "mon-application.jar"]
+CMD ["java", "-jar", "project_devops_2024.jar"]
