@@ -19,6 +19,18 @@ jobs:
       - name: Run tests with Maven and generate coverage report
         run: mvn clean test jacoco:report
 
+      - name: Extract code coverage percentage
+        id: coverage
+        run: echo "::set-output name=coverage::$(awk -F'>' '/<span class="percentage">/{gsub(/<\/span>/,"");print $2}' target/site/jacoco/index.html | awk '{print substr($0,1,length($0)-1)}')"
+
+      - name: Check code coverage threshold
+        run: |
+          coverage="${{ steps.coverage.outputs.coverage }}"
+          if (( $(echo "$coverage < 80" | bc -l) )); then
+            echo "Code coverage is below 80%: $coverage%"
+            exit 1
+          fi
+
       - name: Upload code coverage report
         uses: actions/upload-artifact@v4
         with:
