@@ -1,52 +1,43 @@
 name: Run JUnit Tests and Code Coverage
 
 on:
-  push
+  push:
+    branches:
+      - AddingCodeCover
 
 jobs:
   test-and-coverage:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v2
         with:
           java-version: 21
           distribution: 'adopt'
 
       - name: Run tests with Maven and generate coverage report
-        run: mvn clean test jacoco:report
-
-      - name: Check code coverage
         run: |
-          #! /bin/bash
-          coverage=$(mvn jacoco:report | grep -Po 'Line Coverage: \K[0-9.]+(?=%)')
-          echo "Code coverage is $coverage%"
-          if (( $(echo "$coverage < 80.0" | bc -l) )); then
-            echo "Code coverage is less than 80%" > target/error-report.txt
+          mvn clean test jacoco:report
+          coverage=$(awk -F">" '/<span class="counter.*of condition coverage">/ {print $2}' target/site/jacoco/index.html | awk -F"<" '{print $1}')
+          if (( $(echo "$coverage < 80" | bc -l) )); then
+            echo "TestCovering is less than 80%: $coverage%" > target/coverage-error.txt
           fi
 
-      - name: Upload error report as artifact
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: error-report
-          path: target/error-report.txt
-
       - name: Upload code coverage report
-        if: success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v2
         with:
           name: coverage-report
           path: target/site/jacoco/index.html
 
-      - name: Save test results as artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload coverage error report
+        if: always() && failure()
+        uses: actions/upload-artifact@v2
         with:
-          name: test-results
-          path: target/surefire-reports
+          name: coverage-error
+          path: target/coverage-error.txt
 
   verify:
     runs-on: ubuntu-latest
