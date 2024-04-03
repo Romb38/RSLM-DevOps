@@ -177,5 +177,8 @@ public class Main {
             }
             return builder.toString();
         }
+    public static void main(String[] args) throws IOException {
+        boolean validInput = false;
+        boolean isFile = false;
     }
 }
