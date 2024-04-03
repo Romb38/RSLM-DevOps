@@ -3,7 +3,7 @@ name: Generate Documentation with Doxygen
 on:
   push:
     branches:
-      - main  # Modifier si nécessaire pour la branche de votre choix
+      - doxygen  # Modifier si nécessaire pour la branche de votre choix
 
 jobs:
   build:
