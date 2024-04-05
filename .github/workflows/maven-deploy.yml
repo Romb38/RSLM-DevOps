@@ -1,27 +1,22 @@
-name: Publish package to GitHub Packages
-
+name: Publish package to the Maven Central Repository
 on:
-  push:
-    branches:
-      - MavenRepoCompiler
-
+  release:
+    types: [created]
 jobs:
   publish:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 21
+      - uses: actions/checkout@v4
+      - name: Set up Maven Central Repository
         uses: actions/setup-java@v4
         with:
-          java-version: 21
+          java-version: '11'
           distribution: 'adopt'
-
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
       - name: Publish package
-        run: mvn -X --batch-mode deploy
+        run: mvn --batch-mode deploy
         env:
-          GITHUB_TOKEN: ${{ secrets.JAVA_TOKEN }}
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
