@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>ESLM-DevOps</artifactId>
+    <artifactId>rslmdevops</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -37,27 +37,16 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
+    <distributionManagement> <repository>
+    <id>github</id>
+        <name>GitHub Romb38 Apache Maven Packages</name>
+        <url>https://maven.pkg.github.com/Romb38/rslmdevops</url>
+    </repository>
     </distributionManagement>
+
 
     <!-- [MYCODE] Romb38 -->
     <dependencies>
