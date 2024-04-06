@@ -1,9 +1,8 @@
 name: Run JUnit Tests and Code Coverage
 
 on:
-  push:
-    branches:
-      - MavenRepoCompiler
+  push
+
 
 jobs:
   run-tests:
@@ -49,16 +48,28 @@ jobs:
         run: mvn clean test jacoco:report
 
       - name: Check code coverage
+        id: check-coverage
         run: |
-          #! /bin/bash
           coverage=$(mvn jacoco:report | grep -Po 'Line Coverage: \K[0-9.]+(?=%)')
           echo "Code coverage is $coverage%"
           if (( $(echo "$coverage < 80.0" | bc -l) )); then
             echo "Code coverage is less than 80%"
+            echo "::set-output name=coverage_check_failed::true"
           fi
 
       - name: Upload code coverage report
+        if: steps.check-coverage.outputs.coverage_check_failed != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: target/site/jacoco/index.html
+
+  reject-push:
+    needs: [run-tests, code-coverage]
+    if: ${{ needs.run-tests.result == 'failure' || needs.code-coverage.result == 'failure' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject the push
+        run: |
+          echo "Tests or code coverage failed. Rejecting the push."
+          exit 1
