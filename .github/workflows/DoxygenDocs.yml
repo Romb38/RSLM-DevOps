@@ -1,27 +1,32 @@
-name: Create Doxygen Docs
+# This workflow generates documentation for a project using Doxygen and sets it up for GitHub pages. It will push the
+# documentation onto a special orphan branch to avoid cluttering the source code. This implementation comes from
+# https://ntamonsec.blogspot.com/2020/06/github-actions-doxygen-documentation.html
+name: Deploy Documentation
+
+# Controls when the action will run.
 on:
   push:
-    branches:
-      - AddBadges
+    branches: [ AddBadges ]
 
 jobs:
-  publish:
+  build-documentation:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run Doxygen
+        uses: mattnotmitt/doxygen-action@v1.2.1
         with:
-          java-version: 21
-          distribution: 'adopt'
+          # These are default values, but included for clarity
+          doxyfile-path: ./Doxyfile
+          working-directory: .
+      - name: Pages Deployment
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/html/
+          enable_jekyll: false
+          allow_empty_commit: false
+          force_orphan: true
+          publish_branch: github-pages
 
-      - name: Install Doxygen
-        run: sudo apt-get update && sudo apt-get install -y doxygen
-
-      - name: Create documentation
-        run: mvn doxygen:generate
