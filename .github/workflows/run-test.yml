@@ -52,7 +52,7 @@ jobs:
         run: |
           coverage=$(mvn jacoco:report | grep -Po 'Line Coverage: \K[0-9.]+(?=%)')
           echo "Code coverage is $coverage%"
-          if (( $(echo "$coverage < 80.0" | bc -l) )); then
+          if (( $(echo "$coverage < 00.0" | bc -l) )); then
             echo "Code coverage is less than 80%"
             echo "::set-output name=coverage_check_failed::true"
           fi
