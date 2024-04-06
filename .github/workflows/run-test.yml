@@ -1,4 +1,4 @@
-name: Run JUnit Tests and Code Coverage
+name: Run JUnit Tests and 80% Code Coverage
 
 on:
   push
