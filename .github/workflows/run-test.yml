@@ -58,13 +58,3 @@ jobs:
       - name: Check code coverage
         id: check-coverage
         run: mvn clean verify jacoco:report
-
-  reject-push:
-    needs: [run-tests, code-coverage]
-    if: ${{ needs.run-tests.result == 'failure' || needs.code-coverage.result == 'failure' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Reject the push
-        run: |
-          echo "Tests or code coverage failed. Rejecting the push."
-          exit 1
