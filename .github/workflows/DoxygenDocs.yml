@@ -1,5 +1,4 @@
 name: Create Doxygen Docs
-
 on:
   push:
     branches:
