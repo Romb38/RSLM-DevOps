@@ -4,7 +4,7 @@ Le but de ce projet est de mettre en place une procédure d'intégration continu
 Nous cherhcons ici à metre en place un maximum d'ouitls, de façon cohérente, pour développer
 une bibliothèque d'analyse de données en Java inspiré par la bibliothèque Pandas.
 
-[testWorkflow](https://github.com/github/docs/actions/workflows/run-test.yml/badge.svg)
+![example branch parameter](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=AddBadges)
 
 ## Table des matières
 - [Description des fonctionnalités](#description-des-fonctionnalistés)
