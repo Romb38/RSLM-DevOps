@@ -10,10 +10,10 @@ une bibliothèque d'analyse de données en Java inspiré par la bibliothèque Pa
 
 ## Table des matières
 - [Description des fonctionnalités](#description-des-fonctionnalistés)
-- [Choix des outils](choix-des-outils)
-- [Workflow git](workflow-git)
-- [Docker](docker)
-- [Feedback](feedback)
+- [Choix des outils](#choix-des-outils)
+- [Workflow git](#workflow-git)
+- [Docker](#docker)
+- [Feedback](#feedback)
 
 ## Description des fonctionnalistés
 **Dataframe** : Le type d’objet principal manipulé par RSLM sont les Dataframe. Les Dataframes sont
