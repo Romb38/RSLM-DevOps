@@ -47,16 +47,17 @@ jobs:
       - name: Run tests with Maven and generate coverage report
         run: mvn clean test jacoco:report
 
-      - name: Check code coverage
-        id: check-coverage
-        run: mvn clean verify jacoco:report
-
       - name: Upload code coverage report
         if: steps.check-coverage.outputs.coverage_check_failed != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: target/site/jacoco/index.html
+
+
+      - name: Check code coverage
+        id: check-coverage
+        run: mvn clean verify jacoco:report
 
   reject-push:
     needs: [run-tests, code-coverage]
