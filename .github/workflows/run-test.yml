@@ -49,7 +49,7 @@ jobs:
 
       - name: Check code coverage
         id: check-coverage
-        run: mvn jacoco:check
+        run: mvn clean verify jacoco:report
 
       - name: Upload code coverage report
         if: steps.check-coverage.outputs.coverage_check_failed != 'true'
