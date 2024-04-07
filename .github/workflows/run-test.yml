@@ -1,8 +1,10 @@
 name: Run JUnit Tests and 80% Code Coverage
 
 on:
-  push
-
+  push:
+    branches:
+      - '*'
+      - '!github-pages'
 
 jobs:
   run-tests:
