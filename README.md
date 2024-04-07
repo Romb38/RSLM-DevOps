@@ -4,9 +4,9 @@ Le but de ce projet est de mettre en place une procédure d'intégration continu
 Nous cherhcons ici à metre en place un maximum d'ouitls, de façon cohérente, pour développer
 une bibliothèque d'analyse de données en Java inspiré par la bibliothèque Pandas.
 
-![example branch parameter](https://github.com/Romb38/rslmdevops/actions/workflows/run-test.yml/badge.svg)
-![example branch parameter](https://github.com/Romb38/rslmdevops/actions/workflows/maven-deploy.yml/badge.svg?branch=master)
-
+![badges_tests](https://github.com/Romb38/rslmdevops/actions/workflows/run-test.yml/badge.svg)
+![badges_maven_deploy](https://github.com/Romb38/rslmdevops/actions/workflows/maven-deploy.yml/badge.svg?branch=master)
+![badges_documentation](https://github.com/Romb38/rslmdevops/actions/workflows/DoxygenDocs.yml/badge.svg?branch=master)
 
 ## Table des matières
 - [Description des fonctionnalités](#description-des-fonctionnalistés)
