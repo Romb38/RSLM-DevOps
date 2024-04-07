@@ -3,7 +3,7 @@ name: Run Tests, Ensure 80% Code Coverage, and Deploy Documentation
 on:
   push:
     branches:
-      - Master
+      - master
 
 jobs:
   run-tests-and-coverage:
