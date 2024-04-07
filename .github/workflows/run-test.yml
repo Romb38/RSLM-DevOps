@@ -32,7 +32,7 @@ jobs:
 
       - name: Check if tests passed
         if: ${{ failure() }}
-        run: exit 1
+        run: echo "::error line=1::Test check failed" && exit 1
 
   code-coverage:
     runs-on: ubuntu-latest
