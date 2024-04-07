@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Information sur le projet -->
     <groupId>org.example</groupId>
     <artifactId>rslmdevops</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <!-- Information sur le compilateur du projet et l'encodement des caractères-->
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
@@ -30,11 +33,12 @@
                     <execution>
                         <id>jacoco-report</id>
                         <phase>test</phase>
+                        <!-- On lui dit de faire un rapport dans la phase de tests -->
                         <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
-                    <!-- Add this checking -->
+
                     <execution>
                         <id>jacoco-check</id>
                         <goals>
@@ -48,6 +52,7 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
+                                            <!-- Seuil minimal de couverture de code -->
                                             <minimum>0.8</minimum>
                                         </limit>
                                     </limits>
@@ -59,6 +64,7 @@
                 </executions>
             </plugin>
 
+            <!-- Plugin de création des packages par maven -->
             <plugin>
                 <groupId>de.oscillation.maven</groupId>
                 <artifactId>doxygen-maven-plugin</artifactId>
@@ -84,20 +90,20 @@
                     </execution>
                 </executions>
             </plugin>
-
-
         </plugins>
     </build>
 
-    <distributionManagement> <repository>
-    <id>github</id>
-        <name>GitHub Romb38 Apache Maven Packages</name>
-        <url>https://maven.pkg.github.com/Romb38/rslmdevops</url>
-    </repository>
+    <!-- On indique ici le l'URL du gestionnaire de package -->
+    <distributionManagement>
+        <repository>
+            <!-- L'ID sert à repérer de quel gestionnaire de package on parle -->
+            <id>github</id>
+            <name>GitHub Romb38 Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/Romb38/rslmdevops</url>
+        </repository>
     </distributionManagement>
 
-
-    <!-- [MYCODE] Romb38 -->
+    <!-- On ajoute JUnit pour exécuter les tests -->
     <dependencies>
         <!-- JUnit -->
         <dependency>
