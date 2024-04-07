@@ -1,13 +1,16 @@
+# Contenu du fichier MavenDeploy.yml
 name: Publish package to GitHub Packages
 
 on:
   push:
     branches:
-      - master
+      - AddBadges
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    needs: run-tests
+    if: failure() # Ne s'exécute que si le job run-tests échoue
     permissions:
       contents: read
       packages: write

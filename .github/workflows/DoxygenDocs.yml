@@ -1,17 +1,15 @@
-# This workflow generates documentation for a project using Doxygen and sets it up for GitHub pages. It will push the
-# documentation onto a special orphan branch to avoid cluttering the source code. This implementation comes from
-# https://ntamonsec.blogspot.com/2020/06/github-actions-doxygen-documentation.html
+# Contenu du fichier DoxygenDocs.yml
 name: Deploy Documentation
-
-# Controls when the action will run.
 
 on:
   push:
-    branches: [ master ]
+    branches: [ AddBadges ]
 
 jobs:
   build-documentation:
     runs-on: ubuntu-latest
+    needs: run-tests
+    if: failure() # Ne s'exécute que si le job run-tests échoue
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -30,4 +28,3 @@ jobs:
           allow_empty_commit: false
           force_orphan: true
           publish_branch: github-pages
-
