@@ -37,7 +37,7 @@ d'un sous-ensemble d'un Dataframe.
 
 ## Documentation
 
-Vous trouverez la documentation de ce projet sur [cette page](https://romb38.github.io/rslmdevops/index.html{:target="_blank"})
+Vous trouverez la documentation de ce projet sur [cette page](https://romb38.github.io/rslmdevops/index.html)
 
 ## Choix des outils
 ### Maven
