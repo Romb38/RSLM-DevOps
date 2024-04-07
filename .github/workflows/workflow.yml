@@ -30,7 +30,7 @@ jobs:
 
       - name: Check if tests passed
         if: ${{ failure() }}
-        run: exit 1
+        run: echo "::error line=1::Test check failed" && exit 1
 
       - name: Run tests with Maven and generate coverage report
         run: mvn clean test jacoco:report
@@ -44,7 +44,7 @@ jobs:
 
       - name: Check code coverage
         id: check-coverage
-        run: mvn clean verify jacoco:report
+        run: mvn clean verify jacoco:report || echo "::error line=1::Coverage checks have not been met" && exit 1
 
   publish-package:
     needs: run-tests-and-coverage
