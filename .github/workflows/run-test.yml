@@ -50,14 +50,14 @@ jobs:
       - name: Run tests with Maven and generate coverage report
         run: mvn clean test jacoco:report
 
-      - name: Upload code coverage report
-        if: steps.check-coverage.outputs.coverage_check_failed != 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: target/site/jacoco/index.html
-
-
       - name: Check code coverage
         id: check-coverage
-        run: mvn clean verify jacoco:report
+        run: |
+          coverage_threshold=80
+          actual_coverage=$(awk '/<counter type="INSTRUCTION"/ { instructions=$4 } /<counter type="INSTRUCTION" covered/ { covered=$3 } END { print int(covered / instructions * 100) }' target/site/jacoco/jacoco.xml)
+          if [ "$actual_coverage" -lt "$coverage_threshold" ]; then
+            echo "::error file=coverage-check::Code coverage is below threshold ($actual_coverage% < $coverage_threshold%)"
+            exit 1
+          else
+            echo "::set-output name=coverage_check_failed::false"
+          fi
