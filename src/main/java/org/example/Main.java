@@ -3,7 +3,7 @@ package org.example;
 public class Main {
 
     /**
-     * @brief Méthode principale
+     * @brief Méthode principale améliorée
      *
      * @details This method is the entry point of the program
      */
