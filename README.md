@@ -5,8 +5,7 @@ Nous cherhcons ici à metre en place un maximum d'ouitls, de façon cohérente, 
 une bibliothèque d'analyse de données en Java inspiré par la bibliothèque Pandas.
 
 ![badges_tests](https://github.com/Romb38/rslmdevops/actions/workflows/run-test.yml/badge.svg)
-![badges_maven_deploy](https://github.com/Romb38/rslmdevops/actions/workflows/maven-deploy.yml/badge.svg?branch=master)
-![badges_documentation](https://github.com/Romb38/rslmdevops/actions/workflows/DoxygenDocs.yml/badge.svg?branch=master)
+![badges_maven_deploy](https://github.com/Romb38/rslmdevops/actions/workflows/workflow.yml/badge.svg?branch=master)
 
 ## Table des matières
 - [Description des fonctionnalités](#description-des-fonctionnalistés)
