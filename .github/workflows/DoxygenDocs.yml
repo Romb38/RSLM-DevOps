@@ -7,7 +7,7 @@ name: Deploy Documentation
 
 on:
   push:
-    branches: [ AddBadges ]
+    branches: [ master ]
 
 jobs:
   build-documentation:
