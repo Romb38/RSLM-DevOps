@@ -1,5 +1,6 @@
 name: Run JUnit Tests and 80% Code Coverage
 
+# On veut que ce pipline s'exécute sur toutes les branches SAUF master et github-pages
 on:
   push:
     branches:
@@ -8,48 +9,60 @@ on:
       - '!master'
 
 jobs:
+  # Exécution des tests
   run-tests:
+    # Image docker sur laquelle notre action va se placer
     runs-on: ubuntu-latest
     steps:
+      # Vérification usuelles
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Installation de JAVA sur notre image docker
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: 'adopt'
 
+      # On lance les tests mais on ne s'arrête pas même si l'un d'entre eux échoue
       - name: Run tests with Maven
         run: mvn clean test
         continue-on-error: true
 
+      # On met le rapport dans les artefacts
       - name: Upload test report
         uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: target/surefire-reports/
 
+      # Si les tests ont échoué, on afficher un message d'erreur dans les annotation et on quitte
       - name: Check if tests passed
         if: ${{ failure() }}
         run: echo "::error line=1::Test check failed" && exit 1
 
+  # Vérification de la couverture de code
   code-coverage:
-    runs-on: ubuntu-latest
-    needs: run-tests
+    runs-on: ubuntu-latest #Image Docker
+    needs: run-tests #Action nécessaire à exécuter avant
     steps:
+      # Vérification usuelles
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Installation de JAVA
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: 'adopt'
 
+      # Créé le rapport de couverture de code
       - name: Run tests with Maven and generate coverage report
         run: mvn clean test jacoco:report
 
+      # Le publie dans les artefacts
       - name: Upload code coverage report
         if: steps.check-coverage.outputs.coverage_check_failed != 'true'
         uses: actions/upload-artifact@v4
@@ -57,6 +70,8 @@ jobs:
           name: coverage-report
           path: target/site/jacoco/index.html
 
+      # Vérifie si la couverture de code est suffisante et dans le cas ou elle ne l'est pas
+      # Affiche un message d'erreur et quitte
       - name: Check code coverage
         id: check-coverage
         run: |
