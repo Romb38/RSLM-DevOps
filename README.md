@@ -10,6 +10,7 @@ une bibliothèque d'analyse de données en Java inspiré par la bibliothèque Pa
 
 ## Table des matières
 - [Description des fonctionnalités](#description-des-fonctionnalistés)
+- [Documentation](#documentation)
 - [Choix des outils](#choix-des-outils)
 - [Workflow git](#workflow-git)
 - [Docker](#docker)
@@ -32,6 +33,11 @@ d'un sous-ensemble d'un Dataframe.
 - sélection d'un sous-ensemble de lignes
 - sélection d'un sous-ensemble de colonnes
 - _séléction avancé_
+
+
+## Documentation
+
+Vous trouverez la documentation de ce projet sur [cette page](https://romb38.github.io/rslmdevops/index.html)
 
 ## Choix des outils
 ### Maven
