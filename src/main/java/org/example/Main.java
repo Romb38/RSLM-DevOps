@@ -1,14 +1,14 @@
 package org.example;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class Main {
@@ -33,28 +33,58 @@ public class Main {
         }
         try {
             // WORK IN PROGRESS
-            String dataframe = scanner.nextLine();
-            Table table;
+            ObjectMapper objectMapper = new ObjectMapper();
+            HashMap<String, Object[]> table;
             if (isFile) {
-                CsvReadOptions.Builder builder = CsvReadOptions.builder(dataframe)
-                        .separator(';')
-                        .header(true);
-                table = Table.read().csv(builder.build());
+                table = processFileInput(scanner);
             } else {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                out.write(dataframe.getBytes());
-                table = Table.read().csv(new ByteArrayInputStream(out.toByteArray()));
+                table = processManualInput(scanner, objectMapper);
             }
-//            HashMap<String, Object[]> values = objectMapper.readValue(dataframe, typeRef);
             System.out.println("Result: ");
-//            System.out.println(inputMapToString(values));
+            System.out.println(inputMapToString(table));
         } catch (Exception ex) {
-            System.out.println("Wrong input");
+            System.out.println("Wrong input: " + ex);
         }
         scanner.close();
     }
 
-    private static HashMap<String, Object[]> processManualInput(Scanner scanner) throws JsonProcessingException {
+    private static HashMap<String, Object[]> processFileInput(Scanner scanner) throws IOException {
+        HashMap<String, Object[]> table;
+        System.out.println("File path: ");
+        String input = scanner.nextLine();
+        CsvMapper csvMapper = new CsvMapper();
+        CsvSchema csvSchema = CsvSchema.emptySchema().withHeader();
+
+        MappingIterator<Map<String, Object[]>> mappingIterator = csvMapper
+                .readerFor(Map.class)
+                .with(csvSchema)
+                .with(csvSchema.withColumnSeparator(';'))
+                .readValues(Paths.get(input).toFile());
+
+        table = new HashMap<>();
+        List<Object[]> rows = new ArrayList<>();
+        List<String> columns = new ArrayList<>();
+
+        while (mappingIterator.hasNext()) {
+            Map<String, Object[]> row = mappingIterator.next();
+            Object[] values = row.values().toArray();
+            rows.add(values);
+            if (columns.isEmpty()) {
+                columns.addAll(row.keySet());
+            }
+        }
+        List<Object> row;
+        for (int i = 0; i < columns.size(); i++) {
+            row = new ArrayList<>();
+            for (Object[] objects : rows) {
+                row.add(objects[i]);
+            }
+            table.put(columns.get(i), row.toArray());
+        }
+        return table;
+    }
+
+    private static HashMap<String, Object[]> processManualInput(Scanner scanner, ObjectMapper objectMapper) throws JsonProcessingException {
         boolean done = false;
         HashMap<String, Object[]> table = new HashMap<>();
         List<String> columns = new ArrayList<>();
@@ -63,28 +93,26 @@ public class Main {
             System.out.println("Id of the column:");
             columns.add(scanner.nextLine());
             System.out.println("Add another column? (y = yes/anything else = no):");
-            done = scanner.nextLine().equalsIgnoreCase("y");
+            done = !scanner.nextLine().equalsIgnoreCase("y");
         }
         done = false;
-        ObjectMapper objectMapper = new ObjectMapper();
         while (!done) {
             System.out.println("Row value (max size=" + columns.size() + "):");
             String input = scanner.nextLine();
             Object[] value = objectMapper.readValue(input, Object[].class);
             if (value.length != columns.size()) {
                 System.out.println("Wrong input (" + value.length + " elements instead of " + columns.size() + " expected)");
-                done = false;
             } else {
                 rows.add(value);
                 System.out.println("Add another row? (y = yes/anything else = no):");
-                done = scanner.nextLine().equalsIgnoreCase("y");
+                done = !scanner.nextLine().equalsIgnoreCase("y");
             }
         }
         List<Object> row;
         for (int i = 0; i < columns.size(); i++) {
             row = new ArrayList<>();
-            for (int iRow = 0; iRow < rows.size(); iRow++) {
-                row.add(rows.get(iRow)[i]);
+            for (Object[] objects : rows) {
+                row.add(objects[i]);
             }
             table.put(columns.get(i), row.toArray());
         }
@@ -118,9 +146,7 @@ public class Main {
     }
 
     private static void buildTableDelimiter(StringBuilder builder, int size) {
-        for (int i = 0; i < size; i++) {
-            builder.append("--------");
-        }
+        builder.append("--------".repeat(Math.max(0, size)));
         builder.append(System.lineSeparator());
     }
 }
