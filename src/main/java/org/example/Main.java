@@ -1,9 +1,5 @@
 package org.example;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.util.Scanner;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -153,32 +149,5 @@ public class Main {
     private static void buildTableDelimiter(StringBuilder builder, int size) {
         builder.append("--------".repeat(Math.max(0, size)));
         builder.append(System.lineSeparator());
-        System.out.println("Enter your username: ");
-        Scanner scanner = new Scanner(System.in);
-        String username = scanner.nextLine();
-        ObjectMapper objectMapper = new ObjectMapper();
-//        Object[] values = objectMapper.
-        System.out.println("Your username is " + username);
-        scanner.close();
-    }
-
-    class Dataframe {
-        private Object[] val;
-        Dataframe(Object[] val) {
-            this.val = val;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            if (this.val != null){
-                for(Object value : this.val){
-                    builder.append(value.toString());
-                }
-            }
-            return builder.toString();
-        }
-    public static void main(String[] args) throws IOException {
-        boolean validInput = false;
-        boolean isFile = false;
     }
 }

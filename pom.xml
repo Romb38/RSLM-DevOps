@@ -23,13 +23,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- JPandas -->
-        <dependency>
-            <groupId>tech.tablesaw</groupId>
-            <artifactId>tablesaw-core</artifactId>
-            <version>0.43.1</version>
-        </dependency>
-
         <!-- Jackson mapper -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
