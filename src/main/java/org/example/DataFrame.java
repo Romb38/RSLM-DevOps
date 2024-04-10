@@ -3,6 +3,7 @@ package org.example;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -12,43 +13,36 @@ import java.util.stream.Collectors;
 public class DataFrame<H, T> {
     private final Class<T> classParameterT;
     private final Class<H> classParameterH;
-    private Integer[] index;
+    private Integer[] indexes;
     private HashMap<H, List<T>> content = new HashMap<>();
 
 
     /**
      * Read CSV file for a given file path
-     * Note: csv delimiter character is `;`
+     * Note: csv default delimiter character is `;`
      *
      * @param path file path
      * @throws IOException If unable to open the file
      */
-    DataFrame(Path path, Character columnSeparator, Class<H> classParameterH, Class<T> classParameterT) throws IOException {
+    DataFrame(Path path, Character csvDelimiter, Class<H> classParameterH, Class<T> classParameterT) throws IOException {
         this.classParameterT = classParameterT;
         this.classParameterH = classParameterH;
         CsvMapper csvMapper = new CsvMapper();
         CsvSchema csvSchema = CsvSchema.emptySchema().withHeader();
-        if (columnSeparator == null) {
-            columnSeparator = ';';
+        if (csvDelimiter == null) {
+            csvDelimiter = ';';
         }
 
-        MappingIterator<Map<String, String>> mappingIterator = csvMapper.readerFor(Map.class)
-                .with(csvSchema)
-                .with(csvSchema.withColumnSeparator(columnSeparator))
-                .readValues(path.toFile());
+        MappingIterator<Map<String, String>> mappingIterator = csvMapper.readerFor(Map.class).with(csvSchema).with(csvSchema.withColumnSeparator(csvDelimiter)).readValues(path.toFile());
         List<List<T>> rows = new ArrayList<>();
         List<H> header = new ArrayList<>();
 
         while (mappingIterator.hasNext()) {
             Map<String, String> row = mappingIterator.next();
-            List<T> values = row.values().stream()
-                    .map(this::convertValueT)
-                    .collect(Collectors.toList());
+            List<T> values = row.values().stream().map(this::convertValueT).collect(Collectors.toList());
             rows.add(values);
             if (header.isEmpty()) {
-                header.addAll(row.keySet().stream()
-                        .map(this::convertValueH)
-                        .toList());
+                header.addAll(row.keySet().stream().map(this::convertValueH).toList());
             }
         }
         HashMap<H, List<T>> table = new HashMap<>();
@@ -61,6 +55,17 @@ public class DataFrame<H, T> {
             table.put(header.get(i), row);
         }
         this.setContent(table);
+    }
+
+    /**
+     * Read CSV file for a given file path
+     * Note: csv default delimiter character is `;`
+     *
+     * @param path file path
+     * @throws IOException If unable to open the file
+     */
+    DataFrame(Path path, Class<H> classParameterH, Class<T> classParameterT) throws IOException {
+        this(path, ';', classParameterH, classParameterT);
     }
 
     /**
@@ -84,25 +89,37 @@ public class DataFrame<H, T> {
         this.setContent(table);
     }
 
-    DataFrame(HashMap<H, List<T>> content, Integer[] index, Class<H> classParameterH, Class<T> classParameterT) {
+
+    /**
+     * Build a DataFrame from content Map and indexes
+     *
+     * @param content Data frame content shaped has a map
+     * @param indexes Data frame indexes
+     */
+    DataFrame(HashMap<H, List<T>> content, Integer[] indexes, Class<H> classParameterH, Class<T> classParameterT) {
         this.classParameterT = classParameterT;
         this.classParameterH = classParameterH;
         this.setContent(content);
-        this.setIndex(index);
+        this.setIndexes(indexes);
     }
 
+    /**
+     * Build a DataFrame from content Map
+     *
+     * @param content Data frame content shaped has a map
+     */
     DataFrame(HashMap<H, List<T>> content, Class<H> classParameterH, Class<T> classParameterT) {
         this.classParameterT = classParameterT;
         this.classParameterH = classParameterH;
         this.setContent(content);
     }
 
-    public Integer[] getIndex() {
-        return index;
+    public Integer[] getIndexes() {
+        return indexes;
     }
 
-    public void setIndex(Integer[] index) {
-        this.index = index;
+    public void setIndexes(Integer[] indexes) {
+        this.indexes = indexes;
     }
 
     public HashMap<H, List<T>> getContent() {
@@ -124,31 +141,152 @@ public class DataFrame<H, T> {
      * |    5   |   9   |
      * ------------------
      *
-     * @return Result to display
+     * @return String result to display
      */
-    public String toStringDisplay() {
+    public String toStringDisplay() throws Exception {
+        if (this.getIndexes() != null && this.getIndexes().length != 0) {
+            return toStringDisplayByIndex(this.getIndexes());
+        } else {
+            HashMap<H, List<T>> inputArray = this.getContent();
+            StringBuilder builder = new StringBuilder();
+            int size = inputArray.keySet().size();
+            buildTableDelimiter(builder, size);
+            builder.append("|");
+            for (H inputKey : inputArray.keySet()) {
+                builder.append("\t").append(inputKey).append("\t|");
+            }
+            builder.append(System.lineSeparator());
+            buildTableDelimiter(builder, size);
+            for (int i = 0; i < inputArray.values().stream().max(Comparator.comparing(List::size)).map(List::size).orElse(0); i++) {
+                builder.append("|");
+                for (H inputKey : inputArray.keySet()) {
+                    builder.append("\t").append(inputArray.get(inputKey).size() > i ? inputArray.get(inputKey).get(i).toString() : " ").append("\t|");
+                }
+                builder.append(System.lineSeparator());
+                buildTableDelimiter(builder, size);
+            }
+            return builder.toString();
+        }
+    }
+
+    /**
+     * Display in a table the given dataframe for the given indexes
+     * Example of result:
+     * ------------------
+     * |    a   |   b   |
+     * ------------------
+     * |    1   |   2   |
+     * ------------------
+     * |    5   |   9   |
+     * ------------------
+     *
+     * @return String result to display
+     */
+    public String toStringDisplayByIndex(Integer[] indexes) throws Exception {
+        checkIndexInput(indexes);
         HashMap<H, List<T>> inputArray = this.getContent();
         StringBuilder builder = new StringBuilder();
-        int size = inputArray.keySet().size();
+
+        // Size + 1 since we count the Index column too
+        int size = inputArray.keySet().size() + 1;
         buildTableDelimiter(builder, size);
-        builder.append("|");
+        builder.append("|\t \t|");
         for (H inputKey : inputArray.keySet()) {
             builder.append("\t").append(inputKey).append("\t|");
         }
+
         builder.append(System.lineSeparator());
         buildTableDelimiter(builder, size);
-        for (int i = 0; i < inputArray.values().stream()
-                .max(Comparator.comparing(List::size))
-                .map(List::size).orElse(0); i++) {
+        Integer index;
+        for (int i = 0; i < inputArray.values().stream().max(Comparator.comparing(List::size)).map(List::size).orElse(0); i++) {
+            index = retrieveIndexWhenAtDataFramePosition(indexes, i);
+            if (index != null) {
+                builder.append("|\t").append(index).append("\t|");
+                for (H inputKey : inputArray.keySet()) {
+                    builder.append("\t").append(inputArray.get(inputKey).size() > i ? inputArray.get(inputKey).get(i).toString() : " ").append("\t|");
+                }
+                builder.append(System.lineSeparator());
+                buildTableDelimiter(builder, size);
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Display in a table the given dataframe
+     * Example of result:
+     * ------------------
+     * |    a   |   b   |
+     * ------------------
+     * |    1   |   2   |
+     * ------------------
+     * |    5   |   9   |
+     * ------------------
+     *
+     * @param nbLines number of lines to display
+     * @param mode    true = first n lines // false = last n lines
+     * @return String result to display
+     */
+    public String toStringPartialDisplay(int nbLines, boolean mode) {
+        if (nbLines < 0)
+            nbLines = 0;
+        HashMap<H, List<T>> inputArray = this.getContent();
+        StringBuilder builder = new StringBuilder();
+
+        // Size + 1 since we count the Index column too
+        int size = inputArray.keySet().size() + 1;
+        buildTableDelimiter(builder, size);
+        builder.append("|");
+        if (hasIndex())
+            builder.append("\t \t|");
+
+        for (H inputKey : inputArray.keySet()) {
+            builder.append("\t").append(inputKey).append("\t|");
+        }
+
+        builder.append(System.lineSeparator());
+        buildTableDelimiter(builder, size);
+        Integer index;
+        int maxElement = mode ? nbLines : inputArray.values().stream().max(Comparator.comparing(List::size)).map(List::size).orElse(0);
+        int initialValue = mode ? 0 : Math.max(0, inputArray.values().stream().max(Comparator.comparing(List::size)).map(List::size).orElse(0) - nbLines);
+        for (int i = initialValue; i < maxElement; i++) {
             builder.append("|");
+            if (hasIndex()) {
+                index = this.getIndexes()[i];
+                builder.append("\t").append(index).append("\t|");
+            }
+
             for (H inputKey : inputArray.keySet()) {
-                builder.append("\t").append(inputArray.get(inputKey).size() > i ?
-                        inputArray.get(inputKey).get(i).toString() : " ").append("\t|");
+                builder.append("\t").append(inputArray.get(inputKey).size() > i ? inputArray.get(inputKey).get(i).toString() : " ").append("\t|");
             }
             builder.append(System.lineSeparator());
             buildTableDelimiter(builder, size);
         }
         return builder.toString();
+    }
+
+    public boolean hasIndex() {
+        return this.getIndexes() != null && this.getIndexes().length > 0;
+    }
+
+    private void checkIndexInput(Integer[] indexes) throws Exception {
+        if (indexes == null) throw new Exception("Given index can't be null");
+        if (indexes.length == 0) throw new Exception("Given index can't be empty");
+        if (this.getIndexes() == null || this.getIndexes().length == 0)
+            throw new Exception("No index have been configured yet");
+        if (indexes.length > this.getIndexes().length)
+            throw new Exception("Given index array exceed the current index array length (" + indexes.length + " instead of " + this.getIndexes().length + ")");
+        for (Integer index : indexes) {
+            if (Arrays.stream(this.getIndexes()).noneMatch(val -> Objects.equals(val, index)))
+                throw new Exception("Not existing index given: " + index);
+        }
+    }
+
+    private Integer retrieveIndexWhenAtDataFramePosition(Integer[] indexes, int i) {
+        for (Integer index : indexes) {
+            if (ArrayUtils.indexOf(this.getIndexes(), index) == i) return index;
+        }
+        return null;
     }
 
     /**
@@ -172,6 +310,8 @@ public class DataFrame<H, T> {
             return (T) Boolean.valueOf(input);
         } else if (classParameterT.isAssignableFrom(Double.class)) {
             return (T) Double.valueOf(input);
+        } else if (classParameterT.isAssignableFrom(Float.class)) {
+            return (T) Float.valueOf(input);
         } else {
             throw new IllegalArgumentException("Bad type.");
         }
@@ -187,6 +327,8 @@ public class DataFrame<H, T> {
             return (H) Boolean.valueOf(input);
         } else if (classParameterH.isAssignableFrom(Double.class)) {
             return (H) Double.valueOf(input);
+        } else if (classParameterH.isAssignableFrom(Float.class)) {
+            return (H) Float.valueOf(input);
         } else {
             throw new IllegalArgumentException("Bad type.");
         }
