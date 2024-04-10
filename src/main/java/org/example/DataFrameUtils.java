@@ -17,10 +17,11 @@ public class DataFrameUtils {
      * |    5   |   9   |
      * ------------------
      *
-     * @param inputArray Map of column
+     * @param dataFrame Dataframe to display
      * @return Result to display
      */
-    public static String inputMapToString(HashMap<String, Object[]> inputArray) {
+    public static String inputMapToString(DataFrame dataFrame) {
+        HashMap<String, Object[]> inputArray = dataFrame.getContent();
         StringBuilder builder = new StringBuilder();
         int size = inputArray.keySet().size();
         buildTableDelimiter(builder, size);

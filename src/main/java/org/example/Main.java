@@ -3,8 +3,7 @@ package org.example;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.nio.file.Paths;
 
 public class Main {
 
@@ -15,31 +14,14 @@ public class Main {
     public static void main(String[] args) throws IOException {
         boolean validInput = false;
         boolean isFile = false;
-        Scanner scanner = new Scanner(System.in);
-        while (!validInput) {
-            System.out.println("File or input? (f/i): ");
-            String result = scanner.nextLine();
-            if (result.equalsIgnoreCase("i") || result.equalsIgnoreCase("f")) {
-                isFile = result.contains("f");
-                validInput = true;
-            } else {
-                System.out.println("Wrong input, please type 'f' or 'i'");
-            }
-        }
         try {
             // WORK IN PROGRESS
-            ObjectMapper objectMapper = new ObjectMapper();
-            HashMap<String, Object[]> table;
-            if (isFile) {
-                table = DataFrameReader.processFileInput(scanner);
-            } else {
-                table = DataFrameReader.processManualInput(scanner, objectMapper);
-            }
+            String csvFilePath = System.getenv("CSV_FILE_PATH");
+            DataFrame dataFrame = DataFrameBuilder.buildDataFrameFromInput(Paths.get(csvFilePath));
             System.out.println("Result: ");
-            System.out.println(DataFrameUtils.inputMapToString(table));
+            System.out.println(DataFrameUtils.inputMapToString(dataFrame));
         } catch (Exception ex) {
-            System.out.println("Wrong input: " + ex);
+            System.out.println(ex);
         }
-        scanner.close();
     }
 }
