@@ -1,6 +1,7 @@
 # Projet DevOps : Une bibliothèque d’analyse de données en Java
 
 Le but de ce projet est de mettre en place une procédure d'intégration continue d'un logiciel.
+
 Nous cherhcons ici à metre en place un maximum d'ouitls, de façon cohérente, pour développer
 une bibliothèque d'analyse de données en Java inspiré par la bibliothèque Pandas.
 
@@ -48,14 +49,15 @@ _explication_
 ### Docker
 _explication_
 
-## Workflow git
-### features branch
+
+## Workflow git 
+### features branch 
 Nous avons choisi pour procédure la méthode de workflow Features branch. Ce workflow est simple
-à mettre en place est suffisant pour notre projet. Chaque nouvelle fonctionnalités sera développer sur
-une nouvelle branche. Chaque branchedevra passer les test et sera pull/merge à la suite d'un pull/merge request validé par au moins un autre
+à mettre en place est suffisant pour notre projet. Chaque nouvelle fonctionnalités sera développer sur 
+une nouvelle branche. Chaque branchedevra passer les test et sera pull/merge à la suite d'un pull/merge request validé par au moins un autre 
 collaborateurs. _suite explication_
 
-### procédure de validation des Pull/Merge requests
+### procédure de validation des Pull/Merge requests 
 
 ## Docker
 _liste des images et liens vers le dépot Docker_
