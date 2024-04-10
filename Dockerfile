@@ -1,10 +1,14 @@
-FROM openjdk:21-slim
+# Étape 1: Utiliser une image de base Maven+JDK pour construire et exécuter l'application
+FROM maven:3.8.4-openjdk-21
 
-# Copier le fichier JAR compilé dans l'image
-COPY target/project_devops_2024.jar /usr/app/
-
+# Copier les fichiers sources et le pom.xml dans l'image
+COPY src /home/app/src
+COPY pom.xml /home/app
+COPY csv_directory/csv_devops.csv /home/app/
 # Définir le répertoire de travail
-WORKDIR /usr/app
+WORKDIR /home/app
 
-# Commande pour exécuter l'application
-CMD ["java", "-jar", "project_devops_2024.jar"]
+# Commande pour exécuter l'application directement avec Maven
+CMD ["mvn", "exec:java", "-Dexec.args=/home/app/csv_devops.csv"]
+
+

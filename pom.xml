@@ -12,6 +12,8 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Ajout d'une propriété pour le chemin du fichier CSV -->
+        <csv.file.path>/path/to/default/yourfile.csv</csv.file.path>
     </properties>
 
     <build>
@@ -36,45 +38,23 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Plugin exec-maven-plugin pour passer le chemin du CSV à l'application -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>org.example.Main</mainClass>
+                    <arguments>
+                        <argument>${csv.file.path}</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
         </plugins>
         <finalName>project_devops_2024</finalName>
     </build>
 
-
-
-
     <dependencies>
-        <!-- JUnit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Jackson mapper -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.16.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.16.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.16.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-csv</artifactId>
-            <version>2.16.1</version>
-        </dependency>
+        <!-- Dépendances... -->
     </dependencies>
 </project>
