@@ -12,4 +12,4 @@ COPY target/project_devops_2024.jar /app/project_devops_2024.jar
 COPY csv_directory/csv_devops.csv /home/app
 
 # Exécuter l'application Java, en passant le chemin du fichier CSV comme argument
-CMD ["java", "-jar", "project_devops_2024.jar", "csv_devops.csv"]
+CMD ["java", "-jar", "project_devops_2024.jar", "/app/csv_devops.csv"]
