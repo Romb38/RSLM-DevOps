@@ -6,9 +6,9 @@ INSTANCE_NAME="devops-instance"
 #======================================================
 
 # ================== NE PAS TOUCHER ==================
-ZONE="us-central1-b"
+ZONE="europe-west1-b"
 SCRIPT_PATH="./setupVM.sh"
-MACHINE_TYPE="n1-standard-1"
+MACHINE_TYPE="e2-medium"
 IMAGE_FAMILY="debian-10"
 IMAGE_PROJECT="debian-cloud"
 
@@ -44,5 +44,11 @@ gcloud compute ssh $INSTANCE_NAME --zone=$ZONE --project=$PROJECT_ID --command="
 # ================== Arrêt de l'instance ==================
 echo "Arrêt de l'instance..."
 gcloud compute instances stop $INSTANCE_NAME --zone=$ZONE --project=$PROJECT_ID --quiet
+
+
+# Suppression de l'instance
+echo "Suppression de l'instance..."
+gcloud compute instances delete $INSTANCE_NAME --zone=$ZONE --project=$PROJECT_ID --quiet
+
 
 echo "Opération terminée."
