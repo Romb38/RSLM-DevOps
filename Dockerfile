@@ -1,14 +1,18 @@
-# Étape 1: Utiliser une image de base Maven+JDK pour construire et exécuter l'application
-FROM maven:3.8.4-openjdk-21
+# Étape 1: Partir d'une image officielle OpenJDK 21
+FROM openjdk:21
 
-# Copier les fichiers sources et le pom.xml dans l'image
+# Installer Maven
+RUN apt-get update && \
+    apt-get install -y maven && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copier votre projet dans l'image
 COPY src /home/app/src
 COPY pom.xml /home/app
-COPY csv_directory/csv_devops.csv /home/app/
+COPY csv_directory/csv_devops.csv /home/app
+
 # Définir le répertoire de travail
 WORKDIR /home/app
 
-# Commande pour exécuter l'application directement avec Maven
+# Exécuter l'application avec Maven, en spécifiant le chemin du fichier CSV
 CMD ["mvn", "exec:java", "-Dexec.args=/home/app/csv_devops.csv"]
-
-
