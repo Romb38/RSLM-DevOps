@@ -1,6 +1,7 @@
 package org.example;
 
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class Main {
 
@@ -19,6 +20,8 @@ public class Main {
         System.out.println(dataFrame.toStringPartialDisplay(2, false));
         System.out.println("Result - first 2: ");
         System.out.println(dataFrame.toStringPartialDisplay(2, true));
+        System.out.println("Result - column a & c: ");
+        System.out.println(dataFrame.toStringDisplayByHeader(Arrays.asList("a","c")));
         Integer[] indexes = {1,2,3,4};
         dataFrame.setIndexes(indexes);
         System.out.println("Result with indexes setup: ");
@@ -27,6 +30,10 @@ public class Main {
         System.out.println(dataFrame.toStringPartialDisplay(2, false));
         System.out.println("Result with indexes setup - first 2: ");
         System.out.println(dataFrame.toStringPartialDisplay(2, true));
+        System.out.println("Result with indexes setup - first 2: ");
+        System.out.println(dataFrame.toStringPartialDisplay(2, true));
+        System.out.println("Result with indexes setup - column a & c: ");
+        System.out.println(dataFrame.toStringDisplayByHeader(Arrays.asList("a","c")));
         Integer[] indexesFilter = {1,3};
         System.out.println("Result - with index 1 & 3: ");
         System.out.println(dataFrame.toStringDisplayByIndex(indexesFilter));

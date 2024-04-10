@@ -213,6 +213,52 @@ public class DataFrame<H, T> {
     }
 
     /**
+     * Display in a table the given dataframe for the given indexes
+     * Example of result:
+     * ------------------
+     * |    a   |   b   |
+     * ------------------
+     * |    1   |   2   |
+     * ------------------
+     * |    5   |   9   |
+     * ------------------
+     *
+     * @return String result to display
+     */
+    public String toStringDisplayByHeader(List<H> header) throws Exception {
+        checkHeaderInput(header);
+        HashMap<H, List<T>> inputArray = this.getContent();
+        StringBuilder builder = new StringBuilder();
+
+        // Size + 1 since we count the Index column too
+        int size = hasIndex() ? header.size() + 1 : header.size();
+        buildTableDelimiter(builder, size);
+        builder.append("|");
+        if (hasIndex())
+            builder.append("\t \t|");
+        for (H inputKey : header) {
+            builder.append("\t").append(inputKey).append("\t|");
+        }
+
+        builder.append(System.lineSeparator());
+        buildTableDelimiter(builder, size);
+        Integer index;
+        for (int i = 0; i < inputArray.values().stream().max(Comparator.comparing(List::size)).map(List::size).orElse(0); i++) {
+            builder.append("|");
+            if (hasIndex()) {
+                index = this.getIndexes()[i];
+                builder.append("\t").append(index).append("\t|");
+            }
+            for (H inputKey : header) {
+                builder.append("\t").append(inputArray.get(inputKey).size() > i ? inputArray.get(inputKey).get(i).toString() : " ").append("\t|");
+            }
+            builder.append(System.lineSeparator());
+            buildTableDelimiter(builder, size);
+        }
+        return builder.toString();
+    }
+
+    /**
      * Display in a table the given dataframe
      * Example of result:
      * ------------------
@@ -233,8 +279,8 @@ public class DataFrame<H, T> {
         HashMap<H, List<T>> inputArray = this.getContent();
         StringBuilder builder = new StringBuilder();
 
-        // Size + 1 since we count the Index column too
-        int size = inputArray.keySet().size() + 1;
+        // Size + 1 if we need to count the Index column
+        int size = hasIndex() ? inputArray.keySet().size() + 1 : inputArray.keySet().size();
         buildTableDelimiter(builder, size);
         builder.append("|");
         if (hasIndex())
@@ -280,6 +326,17 @@ public class DataFrame<H, T> {
             if (Arrays.stream(this.getIndexes()).noneMatch(val -> Objects.equals(val, index)))
                 throw new Exception("Not existing index given: " + index);
         }
+    }
+
+    private void checkHeaderInput(List<H> header) throws Exception {
+        if (header == null) throw new Exception("Given header can't be null");
+        if (header.isEmpty()) throw new Exception("Given header can't be empty");
+        if (this.getContent() == null || this.getContent().keySet().isEmpty())
+            throw new Exception("No DataFrame have been configured yet");
+        if (header.size() > this.getContent().keySet().size())
+            throw new Exception("Given header list exceed the current DataFrame header size (" + header.size() + " instead of " + this.getContent().keySet().size() + ")");
+        if (header.stream().noneMatch(val -> this.getContent().containsKey(val)))
+            throw new Exception("Not existing header value given");
     }
 
     private Integer retrieveIndexWhenAtDataFramePosition(Integer[] indexes, int i) {
