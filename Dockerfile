@@ -1,18 +1,15 @@
-# Étape 1: Partir d'une image officielle OpenJDK 21
-FROM openjdk:21
+FROM openjdk:21-slim
 
-# Installer Maven
-RUN apt-get update && \
-    apt-get install -y maven && \
-    rm -rf /var/lib/apt/lists/*
+# Créer un répertoire pour votre application
+WORKDIR /app
 
-# Copier votre projet dans l'image
-COPY src /home/app/src
-COPY pom.xml /home/app
+# Copier le JAR de l'application dans l'image Docker
+# Assurez-vous que le chemin et le nom du fichier JAR correspondent à ceux de votre projet
+COPY target/ESLM-DevOps-1.0-SNAPSHOT.jar /app/ESLM-DevOps.jar
+
+# Copier également le fichier CSV dans l'image Docker, à un emplacement connu
+# Remplacer 'path/to/your/csv_directory' par le chemin vers le répertoire contenant votre fichier CSV dans votre projet
 COPY csv_directory/csv_devops.csv /home/app
 
-# Définir le répertoire de travail
-WORKDIR /home/app
-
-# Exécuter l'application avec Maven, en spécifiant le chemin du fichier CSV
-CMD ["mvn", "exec:java", "-Dexec.args=/home/app/csv_devops.csv"]
+# Exécuter l'application Java, en passant le chemin du fichier CSV comme argument
+CMD ["java", "-jar", "ESLM-DevOps.jar", "csv_devops.csv"]
