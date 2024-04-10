@@ -1,0 +1,28 @@
+- name: Installation de Docker
+  hosts: all
+  become: true
+  tasks:
+    - name: Installation de Docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+      when: ansible_distribution == 'Debian'  # Condition pour s'assurer que la distribution est Ubuntu. Adapter selon votre distribution.
+
+    - name: Démarrage du service Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+
+    - name: Pull Docker image
+      community.docker.docker_image:
+        name: skander23000/project_devops_2024
+        source: pull
+
+    - name: Run Docker container
+      community.docker.docker_container:
+        name: my_devops
+        image: skander23000/project_devops_2024:latest
+        state: started
