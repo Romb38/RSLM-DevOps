@@ -48,7 +48,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: target/site/jacoco/index.html
+          path: target/site/jacoco/
 
       # On vérifie ensuite si la couverture de code est suffisante
       # Le taux de couverture de code minimal est défini dans le pom.xml
