@@ -13,8 +13,8 @@ public class Main {
     public static void main(String[] args) throws IOException {
         try {
             // WORK IN PROGRESS
-            String csvFilePath = System.getenv("CSV_FILE_PATH");
-            DataFrame dataFrame = DataFrameBuilder.buildDataFrameFromInput(Paths.get(csvFilePath), ';');
+//            String csvFilePath = System.getenv("CSV_FILE_PATH");
+            DataFrame<String, Integer> dataFrame = new DataFrame<>(Paths.get("C:\\Users\\Jack Asmens\\Documents\\0. Important\\Cours_M1\\input.csv"), ';', String.class, Integer.class);
             System.out.println("Result: ");
             System.out.println(dataFrame.toStringDisplay());
         } catch (Exception ex) {

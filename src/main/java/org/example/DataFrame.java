@@ -5,13 +5,15 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DataFrame<H, T> {
-    private Object index;
-    private HashMap<H, T[]> content = new HashMap<>();
+    private final Class<T> classParameterT;
+    private final Class<H> classParameterH;
+    private Integer[] index;
+    private HashMap<H, List<T>> content = new HashMap<>();
 
 
     /**
@@ -19,32 +21,46 @@ public class DataFrame<H, T> {
      * Note: csv delimiter character is `;`
      *
      * @param path file path
-     * @return Dataframe extracted
      * @throws IOException If unable to open the file
      */
-    DataFrame(Path path, Character columnSeparator) throws IOException {
+    DataFrame(Path path, Character columnSeparator, Class<H> classParameterH, Class<T> classParameterT) throws IOException {
+        this.classParameterT = classParameterT;
+        this.classParameterH = classParameterH;
         CsvMapper csvMapper = new CsvMapper();
         CsvSchema csvSchema = CsvSchema.emptySchema().withHeader();
         if (columnSeparator == null) {
             columnSeparator = ';';
         }
 
-        MappingIterator<Map<H, T[]>> mappingIterator = csvMapper.readerFor(Map.class)
+        MappingIterator<Map<String, String>> mappingIterator = csvMapper.readerFor(Map.class)
                 .with(csvSchema)
                 .with(csvSchema.withColumnSeparator(columnSeparator))
                 .readValues(path.toFile());
-        List<T[]> rows = new ArrayList<>();
-        List<H> columns = new ArrayList<>();
+        List<List<T>> rows = new ArrayList<>();
+        List<H> header = new ArrayList<>();
 
         while (mappingIterator.hasNext()) {
-            Map<H, T[]> row = mappingIterator.next();
-            T[] values = (T[]) row.values().toArray();
+            Map<String, String> row = mappingIterator.next();
+            List<T> values = row.values().stream()
+                    .map(this::convertValueT)
+                    .collect(Collectors.toList());
             rows.add(values);
-            if (columns.isEmpty()) {
-                columns.addAll(row.keySet());
+            if (header.isEmpty()) {
+                header.addAll(row.keySet().stream()
+                        .map(this::convertValueH)
+                        .toList());
             }
         }
-        return buildDataFrame(columns, rows);
+        HashMap<H, List<T>> table = new HashMap<>();
+        List<T> row;
+        for (int i = 0; i < header.size(); i++) {
+            row = new ArrayList<>();
+            for (List<T> objects : rows) {
+                row.add(objects.get(i));
+            }
+            table.put(header.get(i), row);
+        }
+        this.setContent(table);
     }
 
     /**
@@ -52,54 +68,48 @@ public class DataFrame<H, T> {
      *
      * @param header list of header to declare
      * @param rows   list of rows to declare
-     * @return Dataframe extracted
      */
-    DataFrame(List<H> header, List<T[]> rows) {
-        HashMap<H, T[]> table = new HashMap<>();
+    DataFrame(List<H> header, List<List<T>> rows, Class<H> classParameterH, Class<T> classParameterT) {
+        this.classParameterT = classParameterT;
+        this.classParameterH = classParameterH;
+        HashMap<H, List<T>> table = new HashMap<>();
         List<T> row;
         for (int i = 0; i < header.size(); i++) {
             row = new ArrayList<>();
-            for (T[] objects : rows) {
-                row.add(objects[i]);
+            for (List<T> objects : rows) {
+                row.add(objects.get(i));
             }
-            table.put(header.get(i), row.toArray());
+            table.put(header.get(i), row);
         }
         this.setContent(table);
     }
 
-    DataFrame(HashMap<H, T[]> content, Object index) {
+    DataFrame(HashMap<H, List<T>> content, Integer[] index, Class<H> classParameterH, Class<T> classParameterT) {
+        this.classParameterT = classParameterT;
+        this.classParameterH = classParameterH;
         this.setContent(content);
         this.setIndex(index);
     }
 
-    DataFrame(HashMap<H, T[]> content) {
+    DataFrame(HashMap<H, List<T>> content, Class<H> classParameterH, Class<T> classParameterT) {
+        this.classParameterT = classParameterT;
+        this.classParameterH = classParameterH;
         this.setContent(content);
     }
 
-    /**
-     * Add delimitation between each row
-     *
-     * @param builder String builder of the current table display
-     * @param size    number of spaces to add
-     */
-    private static void buildTableDelimiter(StringBuilder builder, int size) {
-        builder.append("--------".repeat(Math.max(0, size)));
-        builder.append(System.lineSeparator());
-    }
-
-    public Object getIndex() {
+    public Integer[] getIndex() {
         return index;
     }
 
-    public void setIndex(Object index) {
+    public void setIndex(Integer[] index) {
         this.index = index;
     }
 
-    public HashMap<H, T[]> getContent() {
+    public HashMap<H, List<T>> getContent() {
         return content;
     }
 
-    public void setContent(HashMap<H, T[]> content) {
+    public void setContent(HashMap<H, List<T>> content) {
         this.content = content;
     }
 
@@ -117,7 +127,7 @@ public class DataFrame<H, T> {
      * @return Result to display
      */
     public String toStringDisplay() {
-        HashMap<H, T[]> inputArray = this.getContent();
+        HashMap<H, List<T>> inputArray = this.getContent();
         StringBuilder builder = new StringBuilder();
         int size = inputArray.keySet().size();
         buildTableDelimiter(builder, size);
@@ -128,16 +138,57 @@ public class DataFrame<H, T> {
         builder.append(System.lineSeparator());
         buildTableDelimiter(builder, size);
         for (int i = 0; i < inputArray.values().stream()
-                .max(Comparator.comparing(Array::getLength))
-                .map(Array::getLength).orElse(0); i++) {
+                .max(Comparator.comparing(List::size))
+                .map(List::size).orElse(0); i++) {
             builder.append("|");
             for (H inputKey : inputArray.keySet()) {
-                builder.append("\t").append(inputArray.get(inputKey).length > i ?
-                        inputArray.get(inputKey)[i].toString() : " ").append("\t|");
+                builder.append("\t").append(inputArray.get(inputKey).size() > i ?
+                        inputArray.get(inputKey).get(i).toString() : " ").append("\t|");
             }
             builder.append(System.lineSeparator());
             buildTableDelimiter(builder, size);
         }
         return builder.toString();
+    }
+
+    /**
+     * Add delimitation between each row
+     *
+     * @param builder String builder of the current table display
+     * @param size    number of spaces to add
+     */
+    private void buildTableDelimiter(StringBuilder builder, int size) {
+        builder.append("--------".repeat(Math.max(0, size)));
+        builder.append(System.lineSeparator());
+    }
+
+    @SuppressWarnings("unchecked")
+    private T convertValueT(String input) {
+        if (classParameterT.isAssignableFrom(String.class)) {
+            return (T) input;
+        } else if (classParameterT.isAssignableFrom(Integer.class)) {
+            return (T) Integer.valueOf(input);
+        } else if (classParameterT.isAssignableFrom(Boolean.class)) {
+            return (T) Boolean.valueOf(input);
+        } else if (classParameterT.isAssignableFrom(Double.class)) {
+            return (T) Double.valueOf(input);
+        } else {
+            throw new IllegalArgumentException("Bad type.");
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private H convertValueH(String input) {
+        if (classParameterH.isAssignableFrom(String.class)) {
+            return (H) input;
+        } else if (classParameterH.isAssignableFrom(Integer.class)) {
+            return (H) Integer.valueOf(input);
+        } else if (classParameterH.isAssignableFrom(Boolean.class)) {
+            return (H) Boolean.valueOf(input);
+        } else if (classParameterH.isAssignableFrom(Double.class)) {
+            return (H) Double.valueOf(input);
+        } else {
+            throw new IllegalArgumentException("Bad type.");
+        }
     }
 }
