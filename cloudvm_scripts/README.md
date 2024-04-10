@@ -21,6 +21,8 @@ Ensuite, exécuter simplement la commande dans le fichier cloudvm_scripts
 ```bash
 sudo chmod u+x ./init.sh && chmod u+x setupVM.sh && ./init.sh
 ```
+L'API google étant lente, pour lancer plusieurs fois ce script, il est nécessaire d'attendre un certain temps.
+
 
 Il est possible qu'il vous demande de créer une pair de clé la première fois que vous lancez le script. Il utilise ces
 clé pour se connecter en shh. Créez en simplement une.
