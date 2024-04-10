@@ -14,6 +14,7 @@ import java.util.*;
 public class Main {
 
     /**
+
      * @brief Main function
      * @details This method is the entry point of the program
      */
@@ -148,5 +149,14 @@ public class Main {
     private static void buildTableDelimiter(StringBuilder builder, int size) {
         builder.append("--------".repeat(Math.max(0, size)));
         builder.append(System.lineSeparator());
+
+     * @brief Méthode principale améliorée
+     *
+     * @details This method is the entry point of the program
+     */
+    public static void main(String[] args) {
+        System.out.println("Hello world! And root");
+        System.out.println("yo");
+
     }
 }
