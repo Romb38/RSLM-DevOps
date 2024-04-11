@@ -24,7 +24,7 @@ public class DataFrame<H, T> {
      * @param path file path
      * @throws IOException If unable to open the file
      */
-    DataFrame(Path path, Character csvDelimiter, Class<H> classParameterH, Class<T> classParameterT) throws IOException {
+    public DataFrame(Path path, Character csvDelimiter, Class<H> classParameterH, Class<T> classParameterT) throws IOException {
         this.classParameterT = classParameterT;
         this.classParameterH = classParameterH;
         CsvMapper csvMapper = new CsvMapper();
@@ -64,7 +64,7 @@ public class DataFrame<H, T> {
      * @param path file path
      * @throws IOException If unable to open the file
      */
-    DataFrame(Path path, Class<H> classParameterH, Class<T> classParameterT) throws IOException {
+    public DataFrame(Path path, Class<H> classParameterH, Class<T> classParameterT) throws IOException {
         this(path, ';', classParameterH, classParameterT);
     }
 
@@ -74,7 +74,7 @@ public class DataFrame<H, T> {
      * @param header list of header to declare
      * @param rows   list of rows to declare
      */
-    DataFrame(List<H> header, List<List<T>> rows, Class<H> classParameterH, Class<T> classParameterT) {
+    public DataFrame(List<H> header, List<List<T>> rows, Class<H> classParameterH, Class<T> classParameterT) {
         this.classParameterT = classParameterT;
         this.classParameterH = classParameterH;
         HashMap<H, List<T>> table = new HashMap<>();
@@ -96,7 +96,7 @@ public class DataFrame<H, T> {
      * @param content Data frame content shaped has a map
      * @param indexes Data frame indexes
      */
-    DataFrame(HashMap<H, List<T>> content, Integer[] indexes, Class<H> classParameterH, Class<T> classParameterT) {
+    public DataFrame(HashMap<H, List<T>> content, Integer[] indexes, Class<H> classParameterH, Class<T> classParameterT) {
         this.classParameterT = classParameterT;
         this.classParameterH = classParameterH;
         this.setContent(content);
@@ -108,7 +108,7 @@ public class DataFrame<H, T> {
      *
      * @param content Data frame content shaped has a map
      */
-    DataFrame(HashMap<H, List<T>> content, Class<H> classParameterH, Class<T> classParameterT) {
+    public DataFrame(HashMap<H, List<T>> content, Class<H> classParameterH, Class<T> classParameterT) {
         this.classParameterT = classParameterT;
         this.classParameterH = classParameterH;
         this.setContent(content);
