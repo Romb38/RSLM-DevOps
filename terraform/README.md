@@ -58,5 +58,31 @@ terraform init
 terraform plan
 
 # Lancement de la machine virtuelle
-terraform aaply -auto-approve
+terraform apply -auto-approve -destroy
 ```
+
+
+## Arrêt de la machine virtuelle
+
+Attention, la VM ne s'arrête pas toute seule et elle peux consommer encore des crédits. Pour l'arrêter suivez les étapes suivantes
+
+````bash
+# Repérez l'instance que vous voulez stopper dans la liste
+gcloud compute instances list
+
+# Arrêt de la machine virtuelle
+gcloud compute instances stop <INSTANCE_NAME>
+````
+Vous trouverez plus amples information sur [la documentation](https://cloud.google.com/sdk/gcloud/reference/compute/instances/stop)
+
+Il sera nécessaire de relancer l'instance lorsque vous voudrez reprendre avec les commandes suivantes :
+
+```bash
+# Repérez l'instance que vous voulez stopper dans la liste
+gcloud compute instances list
+
+# Démmarage de la machine virtuelle
+gcloud compute instances start <INSTANCE_NAME>
+```
+
+Vous trouverez également plus d'information sur [la documentation](https://cloud.google.com/sdk/gcloud/reference/compute/instances/start)
