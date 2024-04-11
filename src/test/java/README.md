@@ -22,4 +22,4 @@ nos tests.
 
 - **empty.csv** : Fichier CSV vide
 - **noheader.csv** : Fichier CSV ne contenant que des données
-- **exemple.csv** : Fichier CSV contenant des données lambdas
+- **exemple.csv** : Fichier CSV contenant des données et des headers
