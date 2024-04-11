@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -65,17 +66,39 @@ public class UnitTest {
         DataFrame<String, Integer> dataFrame = new DataFrame<>(Paths.get("src/test/java/empty.csv").toAbsolutePath(), null, String.class, Integer.class);
     }
 
-//    @Test
-//    public void basicHeaderLineTestCreation() throws IOException {
-//        List<String> header = Arrays.asList("a", "b", "c");
-//
-//        List<List<Integer>> rowList = new ArrayList<>();
-//
-//        rowList.add(Arrays.asList(1, 2, 3));
-//        rowList.add(Arrays.asList(4, 5, 6));
-//        rowList.add(Arrays.asList(7, 8, 9));
-//
-//
-//        DataFrame<String, Integer> dataFrame = new DataFrame<>(header,rowList, ";", String.class, Integer.class);
-//    }
+    @Test
+    public void basicHeaderLineTestCreation() throws Exception {
+        List<String> header = Arrays.asList("a", "b", "c");
+
+        List<List<Integer>> rowList = new ArrayList<>();
+
+        rowList.add(Arrays.asList(1, 2, 3));
+        rowList.add(Arrays.asList(4, 5, 6));
+        rowList.add(Arrays.asList(7, 8, 9));
+
+        DataFrame<String, Integer> dataFrame = new DataFrame<>(header,rowList, String.class, Integer.class);
+    }
+
+    @Test
+    public void testDataFrameCreation() {
+        // Préparation des données pour le test
+        HashMap<String, List<Integer>> content = new HashMap<>();
+        content.put("index1", List.of(1, 2, 3));
+        content.put("index2", List.of(4, 5, 6));
+        Integer[] indexes = {1, 2, 3};
+
+        // Appel de la méthode DataFrame
+        DataFrame<String, Integer> df = new DataFrame<>(content, indexes, String.class, Integer.class);
+    }
+
+    @Test
+    public void testDataFrameCreationNoHeader() {
+        // Préparation des données pour le test
+        HashMap<String, List<Integer>> content = new HashMap<>();
+        content.put("index1", List.of(1, 2, 3));
+        content.put("index2", List.of(4, 5, 6));
+
+        // Appel de la méthode DataFrame
+        DataFrame<String, Integer> df = new DataFrame<>(content, String.class, Integer.class);
+    }
 }
