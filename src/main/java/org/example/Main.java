@@ -21,6 +21,9 @@ public class Main {
         System.out.println(dataFrame.toStringPartialDisplay(2, true));
         System.out.println("Result - column a & c: ");
         System.out.println(dataFrame.toStringDisplayByHeader(Arrays.asList("a", "c")));
+        DataFrame<String, Integer> dataFrameToc = dataFrame.selectDataFrameByColumn(Arrays.asList("b", "d"));
+        System.out.println("Result - selection by column b & d: ");
+        System.out.println(dataFrameToc.toStringDisplay());
         Integer[] indexes = {1, 2, 3, 4};
         dataFrame.setIndexes(indexes);
         System.out.println("Result with indexes setup: ");
@@ -36,5 +39,11 @@ public class Main {
         Integer[] indexesFilter = {1, 3};
         System.out.println("Result - with index 1 & 3: ");
         System.out.println(dataFrame.toStringDisplayByIndex(indexesFilter));
+        DataFrame<String, Integer> dataFrameTic = dataFrame.selectDataFrameByIndex(indexesFilter);
+        System.out.println("Result - selection by index 1 & 3: ");
+        System.out.println(dataFrameTic.toStringDisplay());
+        DataFrame<String, Integer> dataFrameTac = dataFrame.selectDataFrameByColumn(Arrays.asList("a", "c"));
+        System.out.println("Result - selection by column a & c: ");
+        System.out.println(dataFrameTac.toStringDisplay());
     }
 }

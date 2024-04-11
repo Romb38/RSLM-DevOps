@@ -24,7 +24,7 @@ public class DataFrame<H, T> {
      * @param path file path
      * @throws IOException If unable to open the file
      */
-    DataFrame(Path path, Character csvDelimiter, Class<H> classParameterH, Class<T> classParameterT) throws IOException {
+    public DataFrame(Path path, Character csvDelimiter, Class<H> classParameterH, Class<T> classParameterT) throws IOException {
         this.classParameterT = classParameterT;
         this.classParameterH = classParameterH;
         CsvMapper csvMapper = new CsvMapper();
@@ -64,7 +64,7 @@ public class DataFrame<H, T> {
      * @param path file path
      * @throws IOException If unable to open the file
      */
-    DataFrame(Path path, Class<H> classParameterH, Class<T> classParameterT) throws IOException {
+    public DataFrame(Path path, Class<H> classParameterH, Class<T> classParameterT) throws IOException {
         this(path, ';', classParameterH, classParameterT);
     }
 
@@ -74,7 +74,7 @@ public class DataFrame<H, T> {
      * @param header list of header to declare
      * @param rows   list of rows to declare
      */
-    DataFrame(List<H> header, List<List<T>> rows, Class<H> classParameterH, Class<T> classParameterT) {
+    public DataFrame(List<H> header, List<List<T>> rows, Class<H> classParameterH, Class<T> classParameterT) {
         this.classParameterT = classParameterT;
         this.classParameterH = classParameterH;
         HashMap<H, List<T>> table = new HashMap<>();
@@ -96,7 +96,7 @@ public class DataFrame<H, T> {
      * @param content Data frame content shaped has a map
      * @param indexes Data frame indexes
      */
-    DataFrame(HashMap<H, List<T>> content, Integer[] indexes, Class<H> classParameterH, Class<T> classParameterT) {
+    public DataFrame(HashMap<H, List<T>> content, Integer[] indexes, Class<H> classParameterH, Class<T> classParameterT) {
         this.classParameterT = classParameterT;
         this.classParameterH = classParameterH;
         this.setContent(content);
@@ -108,7 +108,7 @@ public class DataFrame<H, T> {
      *
      * @param content Data frame content shaped has a map
      */
-    DataFrame(HashMap<H, List<T>> content, Class<H> classParameterH, Class<T> classParameterT) {
+    public DataFrame(HashMap<H, List<T>> content, Class<H> classParameterH, Class<T> classParameterT) {
         this.classParameterT = classParameterT;
         this.classParameterH = classParameterH;
         this.setContent(content);
@@ -128,6 +128,33 @@ public class DataFrame<H, T> {
 
     public void setContent(HashMap<H, List<T>> content) {
         this.content = content;
+    }
+
+    public DataFrame<H, T> selectDataFrameByIndex(Integer[] indexes) throws Exception {
+        checkIndexInput(indexes);
+        HashMap<H, List<T>> content = new HashMap<>(this.getContent().entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, map -> {
+                    List<T> list = new ArrayList<>();
+                    for (int i = 0; i < map.getValue().size(); i++) {
+                        Integer index = retrieveIndexWhenAtDataFramePosition(indexes, i);
+                        if (index != null)
+                            list.add(map.getValue().get(i));
+                    }
+                    return list;
+                })));
+        return new DataFrame<>(content, indexes, classParameterH, classParameterT);
+    }
+
+    public DataFrame<H, T> selectDataFrameByColumn(List<H> columns) throws Exception {
+        checkHeaderInput(columns);
+        HashMap<H, List<T>> content = new HashMap<>(this.getContent().entrySet().stream()
+                .filter(entry -> columns.contains(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        if (this.getIndexes() != null && this.getIndexes().length != 0)
+            return new DataFrame<>(content, indexes, classParameterH, classParameterT);
+        else
+            return new DataFrame<>(content, classParameterH, classParameterT);
+
     }
 
     /**
