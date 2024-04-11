@@ -38,6 +38,6 @@ build/
 .DS_Store
 
 ### Terraform ###
-/terraform/mysvcdevops.json
+/terraform/mycredentials.json
 /terraform/.*
 terraform.*

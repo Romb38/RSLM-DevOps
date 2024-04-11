@@ -2,6 +2,7 @@ variable "project" {
   default = "rslm-devops"
 }
 
+
 variable "region" {
   default = "us-west1"
 }
