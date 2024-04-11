@@ -1,14 +1,10 @@
-import com.fasterxml.jackson.dataformat.csv.CsvReadException;
 import org.example.DataFrame;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
