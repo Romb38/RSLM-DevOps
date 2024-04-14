@@ -6,6 +6,8 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
 public class DataFrameTest {
 
@@ -71,6 +73,29 @@ public class DataFrameTest {
         dataFrame.getContent().put("C", Arrays.asList(null, null, 2.0, null, 4.0));
         assertEquals(3.0, dataFrame.average("C"), 0.001);  // Teste la moyenne avec des valeurs null
     }
+    @Test
+    public void testSelectAdvanced() throws Exception {
+        Map<String, Predicate<Double>> criteria = new HashMap<>();
+        criteria.put("A", value -> value > 2.0);  // Sélectionner des valeurs > 2.0 dans la colonne 'A'
+
+        DataFrame<String, Double> result = dataFrame.selectAdvanced(criteria);
+
+        // Les résultats attendus après application des critères
+        List<Double> expectedA = Arrays.asList(3.0, 4.0); // Seules les valeurs > 2.0 de 'A' restent
+        List<Double> expectedB = Arrays.asList(4.0, 5.0); // Correspondant aux mêmes lignes dans 'B'
+
+        // Vérification que les valeurs filtrées sont correctes pour toutes les colonnes affectées
+        assertEquals(expectedA, result.getContent().get("A"));
+        assertEquals(expectedB, result.getContent().get("B"));
+    }
+    @Test(expected = Exception.class)
+    public void testSelectAdvancedWithInvalidHeader() throws Exception {
+        // Passer un en-tête qui n'existe pas devrait lancer une exception
+        Map<String, Predicate<Double>> criteria = new HashMap<>();
+        criteria.put("Z", value -> value > 1.0);  // 'Z' n'existe pas
+        dataFrame.selectAdvanced(criteria);
+    }
+
 
 
 }

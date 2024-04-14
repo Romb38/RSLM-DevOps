@@ -8,6 +8,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class DataFrame<H, T extends Number & Comparable<T>> {
@@ -157,45 +158,78 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
 
     }
 
+    //here
     /**
-     * Display in a table the given dataframe
-     * Example of result:
-     * ------------------
-     * |    a   |   b   |
-     * ------------------
-     * |    1   |   2   |
-     * ------------------
-     * |    5   |   9   |
-     * ------------------
+     * Display the DataFrame in a well-aligned table format, including predefined indices if available.
      *
-     * @return String result to display
+     * @return String representing the DataFrame in a table format.
      */
-    public String toStringDisplay() throws Exception {
-        if (this.getIndexes() != null && this.getIndexes().length != 0) {
-            return toStringDisplayByIndex(this.getIndexes());
-        } else {
-            HashMap<H, List<T>> inputArray = this.getContent();
-            StringBuilder builder = new StringBuilder();
-            int size = inputArray.keySet().size();
-            buildTableDelimiter(builder, size);
+    public String toStringDisplay() {
+        // Calculate the maximum width for each column based on header and data
+        Map<H, Integer> columnWidths = new HashMap<>();
+        for (H header : this.content.keySet()) {
+            int maxWidth = header.toString().length(); // Start with the header's length
+            for (T value : this.content.get(header)) {
+                maxWidth = Math.max(maxWidth, value != null ? value.toString().length() : 0);
+            }
+            columnWidths.put(header, maxWidth);
+        }
+
+        StringBuilder builder = new StringBuilder();
+        boolean hasIndex = this.indexes != null && this.indexes.length > 0;
+        int indexWidth = hasIndex ? Arrays.stream(this.indexes).map(Object::toString).max(Comparator.comparingInt(String::length)).orElse("").length() : 0;
+
+        // Build the table delimiter with or without index
+        buildTableDelimiter(builder, columnWidths, indexWidth, hasIndex);
+
+        // Header row
+        builder.append("|");
+        if (hasIndex) {
+            builder.append(String.format(" %-" + indexWidth + "s |", ""));
+        }
+        for (H header : this.content.keySet()) {
+            builder.append(String.format(" %-" + columnWidths.get(header) + "s |", header));
+        }
+        builder.append(System.lineSeparator());
+        buildTableDelimiter(builder, columnWidths, indexWidth, hasIndex);
+
+        // Data rows
+        int numberOfRows = this.content.values().iterator().next().size();
+        for (int i = 0; i < numberOfRows; i++) {
             builder.append("|");
-            for (H inputKey : inputArray.keySet()) {
-                builder.append("\t").append(inputKey).append("\t|");
+            if (hasIndex) {
+                builder.append(String.format(" %-" + indexWidth + "s |", this.indexes[i]));
+            }
+            for (H header : this.content.keySet()) {
+                List<T> column = this.content.get(header);
+                String value = column.size() > i && column.get(i) != null ? column.get(i).toString() : "";
+                builder.append(String.format(" %-" + columnWidths.get(header) + "s |", value));
             }
             builder.append(System.lineSeparator());
-            buildTableDelimiter(builder, size);
-            for (int i = 0; i < inputArray.values().stream().max(Comparator.comparing(List::size)).map(List::size).orElse(0); i++) {
-                builder.append("|");
-                for (H inputKey : inputArray.keySet()) {
-                    builder.append("\t").append(inputArray.get(inputKey).size() > i ? inputArray.get(inputKey).get(i).toString() : " ").append("\t|");
-                }
-                builder.append(System.lineSeparator());
-                buildTableDelimiter(builder, size);
-            }
-            return builder.toString();
+            buildTableDelimiter(builder, columnWidths, indexWidth, hasIndex);
         }
+
+        return builder.toString();
     }
 
+    /**
+     * Builds the delimiter line for the table based on column widths, including index if exists.
+     *
+     * @param builder      StringBuilder to which the delimiter line is appended.
+     * @param columnWidths Map with the widths for each column.
+     * @param indexWidth   Width of the index column, if indices are used.
+     * @param hasIndex     Boolean indicating if indices are present.
+     */
+    private void buildTableDelimiter(StringBuilder builder, Map<H, Integer> columnWidths, int indexWidth, boolean hasIndex) {
+        builder.append("+");
+        if (hasIndex) {
+            builder.append("-".repeat(indexWidth + 2)).append("+"); // +2 for the padding on both sides
+        }
+        for (Integer width : columnWidths.values()) {
+            builder.append("-".repeat(width + 2)).append("+"); // +2 for the padding on both sides
+        }
+        builder.append(System.lineSeparator());
+    }
     /**
      * Display in a table the given dataframe for the given indexes
      * Example of result:
@@ -460,5 +494,57 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
                 .max(Comparator.naturalOrder())
                 .orElse(null);  // Retourne null si la colonne est vide
     }
+    /**
+     * Advanced selection based on custom predicates per column that filters entire rows.
+     *
+     * @param criteria Map of headers to their respective predicates for selection.
+     * @return A new DataFrame with only the rows that match all the criteria for any mentioned column.
+     * @throws Exception If there are issues with the headers.
+     */
+    public DataFrame<H, T> selectAdvanced(Map<H, Predicate<T>> criteria) throws Exception {
+        if (criteria == null || criteria.isEmpty()) {
+            throw new IllegalArgumentException("Criteria map cannot be null or empty.");
+        }
+
+        // Check for invalid headers
+        for (H header : criteria.keySet()) {
+            if (!this.content.containsKey(header)) {
+                throw new Exception("Header not found in DataFrame: " + header);
+            }
+        }
+
+        // Create a list of all headers for index reference
+        List<H> allHeaders = new ArrayList<>(this.content.keySet());
+
+        // Prepare to collect indexes of rows that match all criteria
+        Set<Integer> validRowIndexes = new HashSet<>();
+        for (int i = 0; i < this.content.get(allHeaders.get(0)).size(); i++) {
+            final int rowIndex = i;
+            boolean rowMatches = allHeaders.stream()
+                    .allMatch(header -> criteria.getOrDefault(header, val -> true).test(this.content.get(header).get(rowIndex)));
+            if (rowMatches) {
+                validRowIndexes.add(rowIndex);
+            }
+        }
+
+        // Build new content map with only the valid rows
+        HashMap<H, List<T>> filteredContent = new HashMap<>();
+        for (H header : allHeaders) {
+            List<T> originalList = this.content.get(header);
+            List<T> filteredList = validRowIndexes.stream()
+                    .map(originalList::get)
+                    .collect(Collectors.toList());
+            filteredContent.put(header, filteredList);
+        }
+
+        // Adjust indexes if they are used in the original DataFrame
+        if (this.indexes != null && this.indexes.length > 0) {
+            Integer[] newIndexes = validRowIndexes.stream().map(i -> this.indexes[i]).toArray(Integer[]::new);
+            return new DataFrame<>(filteredContent, newIndexes, classParameterH, classParameterT);
+        } else {
+            return new DataFrame<>(filteredContent, classParameterH, classParameterT);
+        }
+    }
+
 }
 

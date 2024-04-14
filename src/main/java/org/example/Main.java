@@ -2,6 +2,11 @@ package org.example;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -55,7 +60,39 @@ public class Main {
             DataFrame<String, Integer> dataFrameTac = dataFrame.selectDataFrameByColumn(Arrays.asList("a", "c"));
             System.out.println("Result - selection by column a & c: ");
             System.out.println(dataFrameTac.toStringDisplay());
+
+            try {
+                // Création d'un DataFrame d'exemple avec des données d'employés
+                List<String> headers = Arrays.asList("Age", "Department", "Salary");
+                List<List<Integer>> rows = Arrays.asList(
+                        Arrays.asList(30, 1, 5000),  // Supposons que 'HR' = 1, 'Engineering' = 2, 'Marketing' = 3
+                        Arrays.asList(45, 2, 7000),
+                        Arrays.asList(29, 1, 4500),
+                        Arrays.asList(35, 2, 5200),
+                        Arrays.asList(42, 3, 6200)
+                );
+
+
+                // Création du DataFrame
+                DataFrame<String, Integer> df = new DataFrame<>(headers, rows, String.class, Integer.class);
+
+                // Définir les critères de sélection avancée
+                Map<String, Predicate<Integer>> criteria = new HashMap<>();
+                criteria.put("Age", age -> age > 30); // Âge doit être supérieur à 30 ans
+                criteria.put("Salary", salary -> salary >= 6000); // Salaire doit être supérieur ou égal à 6000
+
+                // Application de la sélection avancée
+                DataFrame<String, Integer> filteredDf = df.selectAdvanced(criteria);
+
+                // Affichage du résultat
+                System.out.println("result :");
+                System.out.println(filteredDf.toStringDisplay());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         }
     }
-}
+
 
