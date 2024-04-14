@@ -75,7 +75,8 @@ public class Main {
 
                 // Création du DataFrame
                 DataFrame<String, Integer> df = new DataFrame<>(headers, rows, String.class, Integer.class);
-
+                System.out.println("Nouveau Dataframe : ");
+                System.out.println(df.toStringDisplay());
                 // Définir les critères de sélection avancée
                 Map<String, Predicate<Integer>> criteria = new HashMap<>();
                 criteria.put("Age", age -> age > 30); // Âge doit être supérieur à 30 ans
@@ -85,7 +86,7 @@ public class Main {
                 DataFrame<String, Integer> filteredDf = df.selectAdvanced(criteria);
 
                 // Affichage du résultat
-                System.out.println("result :");
+                System.out.println("result apres selection selon critères age > 30 et salaire > 6000 :");
                 System.out.println(filteredDf.toStringDisplay());
 
             } catch (Exception e) {
