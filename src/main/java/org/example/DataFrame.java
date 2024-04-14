@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DataFrame<H, T> {
+public class DataFrame<H, T extends Number & Comparable<T>> {
     private final Class<T> classParameterT;
     private final Class<H> classParameterH;
     private Integer[] indexes;
@@ -386,20 +386,23 @@ public class DataFrame<H, T> {
 
     @SuppressWarnings("unchecked")
     private T convertValueT(String input) {
-        if (classParameterT.isAssignableFrom(String.class)) {
-            return (T) input;
-        } else if (classParameterT.isAssignableFrom(Integer.class)) {
-            return (T) Integer.valueOf(input);
-        } else if (classParameterT.isAssignableFrom(Boolean.class)) {
-            return (T) Boolean.valueOf(input);
-        } else if (classParameterT.isAssignableFrom(Double.class)) {
-            return (T) Double.valueOf(input);
-        } else if (classParameterT.isAssignableFrom(Float.class)) {
-            return (T) Float.valueOf(input);
-        } else {
-            throw new IllegalArgumentException("Bad type.");
+        try {
+            if (classParameterT.isAssignableFrom(Integer.class)) {
+                return (T) Integer.valueOf(input);
+            } else if (classParameterT.isAssignableFrom(Double.class)) {
+                return (T) Double.valueOf(input);
+            } else if (classParameterT.isAssignableFrom(Float.class)) {
+                return (T) Float.valueOf(input);
+            } else if (classParameterT.isAssignableFrom(Long.class)) {
+                return (T) Long.valueOf(input);
+            } else {
+                throw new IllegalArgumentException("Unsupported type.");
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Input string is not a valid number: " + input);
         }
     }
+
 
     @SuppressWarnings("unchecked")
     private H convertValueH(String input) {
@@ -417,4 +420,45 @@ public class DataFrame<H, T> {
             throw new IllegalArgumentException("Bad type.");
         }
     }
+    /**
+     * Calculate sum of a column
+     */
+    public double sum(H header) {
+        return this.content.get(header).stream()
+                .filter(Objects::nonNull)  // Filtre pour ignorer les valeurs null
+                .mapToDouble(Number::doubleValue)
+                .sum();
+    }
+
+
+    /**
+     * Calculate average of a column
+     */
+    public double average(H header) {
+        return this.content.get(header).stream()
+                .filter(Objects::nonNull)  // Filtre pour ignorer les valeurs null
+                .mapToDouble(Number::doubleValue)
+                .average()
+                .orElse(Double.NaN);  // Retourne NaN si aucune valeur n'est présente après le filtrage
+    }
+
+
+    /**
+     * Find minimum value in a column
+     */
+    public T min(H header) {
+        return this.content.get(header).stream()
+                .min(Comparator.naturalOrder())
+                .orElse(null);  // Retourne null si la colonne est vide
+    }
+
+    /**
+     * Find maximum value in a column
+     */
+    public T max(H header) {
+        return this.content.get(header).stream()
+                .max(Comparator.naturalOrder())
+                .orElse(null);  // Retourne null si la colonne est vide
+    }
 }
+
