@@ -13,10 +13,8 @@ nos tests.
 
 # Les fichiers de tests
 
-- **UnitTest** : Ce fichier contient les test rédigée à la main, il s'agit souvent de test précis afin de cibler des cas
+- **DataFrameTest** : Ce fichier contient les test, il s'agit souvent de test précis afin de cibler des cas
   très spécifiques
-- **autoTesting** : Il contient des tests généré par une intelligence artificielle. Les tests sont plus généraux et font
-  une couverture classique du code
 
 # Les annexes
 
