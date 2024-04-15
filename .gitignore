@@ -38,5 +38,10 @@ build/
 ### Mac OS ###
 .DS_Store
 
+### Terraform ###
+/terraform/mycredentials.json
+/terraform/.*
+terraform.*
 
+### Maven ###
 .m2/
