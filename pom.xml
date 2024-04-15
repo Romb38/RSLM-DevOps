@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Information sur le projet -->
     <groupId>org.example</groupId>
-    <artifactId>ESLM-DevOps</artifactId>
+    <artifactId>rslmdevops</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <!-- Information sur le compilateur du projet et l'encodement des caractères-->
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
@@ -18,6 +21,77 @@
 
     <build>
         <plugins>
+            <!-- Plugin JaCoCo pour générer des rapports de couverture de code -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-report</id>
+                        <phase>test</phase>
+                        <!-- On lui dit de faire un rapport dans la phase de tests -->
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>jacoco-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>PACKAGE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <!-- Seuil minimal de couverture de code -->
+                                            <minimum>0.8</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+            <!-- Plugin de création des packages par maven -->
+            <plugin>
+                <groupId>de.oscillation.maven</groupId>
+                <artifactId>doxygen-maven-plugin</artifactId>
+                <version>0.1.0</version>
+                <configuration>
+                    <workingDirectory>${basedir}</workingDirectory>
+                    <autogen>false</autogen>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>generate</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -51,15 +125,33 @@
                 </configuration>
             </plugin>
         </plugins>
+
         <finalName>project_devops_2024</finalName>
     </build>
+    <!-- On indique ici le l'URL du gestionnaire de package -->
+    <distributionManagement>
+        <repository>
+            <!-- L'ID sert à repérer de quel gestionnaire de package on parle -->
+            <id>github</id>
+            <name>GitHub Romb38 Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/Romb38/rslmdevops</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
-        <!-- Dépendances... -->
+        <!-- JUnit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-csv</artifactId>
             <version>2.16.1</version>
         </dependency>
     </dependencies>
+
 </project>
+
