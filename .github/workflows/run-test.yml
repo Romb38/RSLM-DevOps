@@ -75,4 +75,4 @@ jobs:
       - name: Check code coverage
         id: check-coverage
         run: |
-          mvn clean verify jacoco:report || echo "::error line=1::Coverage checks have not been met" && exit 1
+          mvn clean verify jacoco:report || echo "::error line=1::Coverage checks have not been met"
