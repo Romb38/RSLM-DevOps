@@ -41,3 +41,6 @@ build/
 /terraform/mycredentials.json
 /terraform/.*
 terraform.*
+
+### Maven ###
+.m2/
