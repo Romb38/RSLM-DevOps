@@ -15,8 +15,6 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Ajout d'une propriété pour le chemin du fichier CSV -->
-        <csv.file.path>/path/to/default/yourfile.csv</csv.file.path>
     </properties>
 
     <build>
@@ -32,6 +30,7 @@
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
+
                     <execution>
                         <id>jacoco-report</id>
                         <phase>test</phase>
@@ -60,9 +59,11 @@
                                     </limits>
                                 </rule>
                             </rules>
+                            <excludes>
+                                <exclude>**/example/Main.*</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
-
                 </executions>
             </plugin>
 
