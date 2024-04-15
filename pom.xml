@@ -15,6 +15,8 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Ajout d'une propriété pour le chemin du fichier CSV -->
+        <csv.file.path>/path/to/default/yourfile.csv</csv.file.path>
     </properties>
 
     <build>
@@ -90,9 +92,42 @@
                     </execution>
                 </executions>
             </plugin>
-        </plugins>
-    </build>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>org.example.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
+            <!-- Plugin exec-maven-plugin pour passer le chemin du CSV à l'application -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>org.example.Main</mainClass>
+                    <arguments>
+                        <argument>${csv.file.path}</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <finalName>project_devops_2024</finalName>
+    </build>
     <!-- On indique ici le l'URL du gestionnaire de package -->
     <distributionManagement>
         <repository>
@@ -103,7 +138,6 @@
         </repository>
     </distributionManagement>
 
-    <!-- On ajoute JUnit pour exécuter les tests -->
     <dependencies>
         <!-- JUnit -->
         <dependency>
@@ -112,7 +146,22 @@
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
-    </dependencies>
 
+
+        <!-- Jackson mapper -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-csv</artifactId>
+            <version>2.16.1</version>
+        </dependency>
+
+        <!-- Commons lang-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+
+    </dependencies>
 </project>
 

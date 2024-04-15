@@ -68,7 +68,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: target/site/jacoco/index.html
+          path: target/site/jacoco/
 
       # Vérifie si la couverture de code est suffisante et dans le cas ou elle ne l'est pas
       # Affiche un message d'erreur et quitte
