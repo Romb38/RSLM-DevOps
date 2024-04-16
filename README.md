@@ -66,11 +66,11 @@ une nouvelle branche. Chaque branchedevra passer les test et sera pull/merge à 
 collaborateurs. _suite explication_
 
 ### Procédure de validation des Pull/Merge requests
-Nous avons choisi pour notre projet que chaque Pull/Merge requests devrait être validés par 2 personnes.
+Nous avons choisi pour notre projet que chaque Pull/Merge requests devrait être validés par une personne minimum.
 
 ## Docker
 _liste des images et liens vers le dépot Docker_
 
 ## Feedback
-
+Ce projet a été très stimulant pour nous, nous avons pu mettre en application de nombreux outils de travail collaboratif. De plus la large liberté dans le choix des outils et méthode à utiliser nous a permis de faire face à nos erreurs et adaptés nos choix en pleine conscience.
 [Go to Top](#table-des-matières)
