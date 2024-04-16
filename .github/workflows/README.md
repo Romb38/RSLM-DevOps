@@ -50,3 +50,9 @@ comprendre en suivant [ce tutoriel](https://kylerobots.github.io/tutorials/Autom
 Github est paramétrée pour aller chercher la documentation sur cette branche et la mettre sur le site web
 
 Avec tout cela de fait, notre package est prêt à être utilisé.
+
+### Docker
+
+Un conteneur docker est également créé et poussé sur un repertoire DockerHub. Il contient une simulation de
+fonctionnement de notre package. Vous le trouverez à l'adresse 
+[https://hub.docker.com/r/skander23000/project_devops_2024](https://hub.docker.com/r/skander23000/project_devops_2024)
