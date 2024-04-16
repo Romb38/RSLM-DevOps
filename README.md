@@ -41,13 +41,21 @@ Vous trouverez la documentation de ce projet sur [cette page](https://romb38.git
 
 ## Choix des outils
 ### Maven
-_explication_
-### Junit
-_explication_
+Maven associés à différents plugin nous a permis d'organiser la gestion de ce projet.
+#### JUnit (v4.13.2) 
+Nous avons mis en place les tests unitaires de notre bibliothèque à l'aide de JUnit. Cet outils nous a permis d'automatiser les tests et les rapports de tests.
+#### Jackson Mapper
+Nous nous sommes servi de la bibliothèque Jackson Mapper pour la manipulation des données JSON.
+#### Doxygen-Maven-Plugin
+Le plugin Doxygen-Maven nous a permis de mettre en place la documentation automatique de notre bibliothèque.
+#### JaCoCo
+JaCoCo mesure la couverture de code des tests unitaires mis en place à l'aide de JUnit. Nous avons choisi qu'une couverture de code par les tests de 80% minimum serait nécessaire pour notre bibliothèque.
 ### Github
-_explication_
+Les fonctionalités de collaboration offertes par Github nous ont permis de mettre en place un développement en parallèle. Nous avons pu intégrer les pipelines de test automatisés et de couverture de code sur l'ensemble de nos branches. Ainsi que le déploiement automatisé sur la branche _master_ et la mise à jour automatique de la documentation sur la branche _github-pages_
+### Terraform et Ansible
+Terraform est un outils de création de machine virtuelle relié à différents services. Nous l'avons utiliser pour déployer des machines virtuelles sur Google Cloud. Il execute également sur la machine un script Ansible. Ce script permet d'installer Docker et lance la simulation que nous avons créé. Ensemble, ils permettent de déployer et de gérer l'infrastructure de manière reproductible et automatisée.
 ### Docker
-_explication_
+Docker nous a permis de créer des conteurs. Cette plateforme offre des avantages pour le déploiement et la gestions des conteneurs, ce qui permet une meilleure portabilité de la bibliothèque.
 
 
 ## Workflow git 
@@ -57,7 +65,8 @@ Nous avons choisi pour procédure la méthode de workflow Features branch. Ce wo
 une nouvelle branche. Chaque branchedevra passer les test et sera pull/merge à la suite d'un pull/merge request validé par au moins un autre 
 collaborateurs. _suite explication_
 
-### procédure de validation des Pull/Merge requests 
+### Procédure de validation des Pull/Merge requests
+Nous avons choisi pour notre projet que chaque Pull/Merge requests devrait être validés par 2 personnes.
 
 ## Docker
 _liste des images et liens vers le dépot Docker_
