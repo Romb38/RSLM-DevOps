@@ -1,0 +1,37 @@
+name: Terraform Apply
+
+on:
+  push
+
+
+jobs:
+  terraform_apply:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set credentials as environment variable
+        run: |
+          cd ./terraform
+          echo "$MY_CREDENTIALS_JSON" > mycredentials.json
+        env:
+          MY_CREDENTIALS_JSON: ${{ secrets.MYCREDENTIALS_JSON }}
+
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.0
+          backend-config: '${{ secrets.MYCREDENTIALS_JSON }}'
+          working-directory: ./terraform
+
+
+      - name: Terraform apply
+        run: |
+          cd ./terraform
+          terraform init
+          terraform apply -auto-approve
+        
+
