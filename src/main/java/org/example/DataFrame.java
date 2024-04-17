@@ -1,7 +1,6 @@
 package org.example;
 
 
-
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
@@ -13,6 +12,11 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * @param <H> Column header type
+ * @param <T> Content type
+ * @brief Data manipulation library
+ */
 public class DataFrame<H, T extends Number & Comparable<T>> {
     private final Class<T> classParameterT;
     private final Class<H> classParameterH;
