@@ -1,154 +1,155 @@
-name: Run Tests, Ensure 80% Code Coverage, and Deploy Documentation
+  name: Run Tests, Ensure 80% Code Coverage, and Deploy Documentation
 
-#Ne se fait que lorsqu'on push sur la branche master (aussi lors de la validation d'une pull request)
-on:
-  push:
-    branches:
-      - "master"
-  pull_request:
-    branches:
-      - "master"
+  #Ne se fait que lorsqu'on push sur la branche master (aussi lors de la validation d'une pull request)
+  on:
+    push:
+      branches:
+        - "debug/doxygen"
+    pull_request:
+      branches:
+        - "master"
+
+  jobs:
+    run-tests-and-coverage:
+      # Image docker sur laquelle nos action vont s'effectuer
+      runs-on: ubuntu-latest
+      steps:
+        # Vérification usuelles
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        # Installation de la version de JAVA sur notre image Docker
+        - name: Set up JDK 21
+          uses: actions/setup-java@v4
+          with:
+            java-version: 21
+            distribution: 'adopt'
+
+        # On lance les tests mais on ne s'arrête pas même si l'un d'entre eux échoue
+        - name: Run tests with Maven
+          run: mvn clean test
+          continue-on-error: true
+
+        # On met le rapport dans les artefacts
+        - name: Upload test report
+          uses: actions/upload-artifact@v4
+          with:
+            name: test-report
+            path: target/surefire-reports/
+
+        # Si les tests ont échoué, on afficher un message d'erreur dans les annotation et on quitte
+        - name: Check if tests passed
+          if: ${{ failure() }}
+          run: echo "::error line=1::Test check failed" && exit 1
+
+        # Les tests sont passé, on fait le rapport de couverture de code
+        - name: Run tests with Maven and generate coverage report
+          run: mvn clean test jacoco:report
+
+        # On le publie dans les artefacts
+        - name: Upload code coverage report
+          uses: actions/upload-artifact@v4
+          with:
+            name: coverage-report
+            path: target/site/jacoco/
+
+        # On vérifie ensuite si la couverture de code est suffisante
+        # Le taux de couverture de code minimal est défini dans le pom.xml
+        # Si il est trop faible, on renvoie une erreur
+        - name: Check code coverage
+          id: check-coverage
+          run: mvn clean verify jacoco:report || echo "::error line=1::Coverage checks have not been met"
+
+    publish-package:
+      # On publie les packages si les tests sont passés
+      needs: run-tests-and-coverage # Action nécessaire pour exécuter celle ci
+      # Image docker
+      runs-on: ubuntu-latest
+      # On va devoir push le package, donc on demande les permission nécessaire
+      permissions:
+        contents: read
+        packages: write
+      steps:
+        # Vérification usuelle
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        # Installation de JAVA
+        - name: Set up JDK 21
+          uses: actions/setup-java@v4
+          with:
+            java-version: 21
+            distribution: 'adopt'
+
+        # On publie le package grâce à l'URL définie dans le pom.xml
+        # On lui donne un token de compte défini dans les sercrets du repertoire Github
+        - name: Publish package
+          run: mvn --batch-mode deploy
+          env:
+            GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
+
+    deploy-documentation:
+      # Mise à jour de la documentation
+      needs: run-tests-and-coverage # Action nécessaire pour éxecuter celle ci
+      runs-on: ubuntu-latest # Image docker
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+          with:
+            ref: master
 
 
-jobs:
-  run-tests-and-coverage:
-    # Image docker sur laquelle nos action vont s'effectuer
-    runs-on: ubuntu-latest
-    steps:
-      # Vérification usuelles
-      - name: Checkout repository
-        uses: actions/checkout@v4
+        - name: Install Doxygen
+          run: |
+            sudo apt-get update
+            sudo apt-get install doxygen
 
-      # Installation de la version de JAVA sur notre image Docker
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: 'adopt'
+        # On exécute Doxygen grâce à l'action de mattnotmitt (cf : ./README.md)
+        - name: Run Doxygen
+          uses: mattnotmitt/doxygen-action@v1.2.1
+          with:
+            # These are default values, but included for clarity
+            doxyfile-path: ./Doxyfile
+            working-directory: .
 
-      # On lance les tests mais on ne s'arrête pas même si l'un d'entre eux échoue
-      - name: Run tests with Maven
-        run: mvn clean test
-        continue-on-error: true
+        # On push les pages ainsi créés sur la branche github-pages
+        # Pour cela on utilise le token spécifique du repertoire
+        # Le fichier Doxygen du projet est également paramétré pour suivre ces directives
+        # (cf : ./README.md)
+        - name: Pages Deployment
+          uses: peaceiris/actions-gh-pages@v3
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: ./docs
+            enable_jekyll: false
+            allow_empty_commit: false
+            force_orphan: true
+            publish_branch: github-pages
 
-      # On met le rapport dans les artefacts
-      - name: Upload test report
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report
-          path: target/surefire-reports/
+    deploy-docker:
+      #On déploie notre conteneur docker contenant notre simulation sur DockerHub
+      runs-on: ubuntu-latest #Conteneur docker
+      needs: run-tests-and-coverage # Action nécessaire pour éxecuter celle ci
+      steps:
+        - uses: actions/checkout@v3
+        - name: Set up JDK 21
+          uses: actions/setup-java@v3
+          with:
+            java-version: '21'
+            distribution: 'temurin'
+            cache: maven
+        - name: Build with Maven
+          run: mvn clean install # On fabrique le package grâce à l'étape install du cycle de vie Maven
 
-      # Si les tests ont échoué, on afficher un message d'erreur dans les annotation et on quitte
-      - name: Check if tests passed
-        if: ${{ failure() }}
-        run: echo "::error line=1::Test check failed" && exit 1
-
-      # Les tests sont passé, on fait le rapport de couverture de code
-      - name: Run tests with Maven and generate coverage report
-        run: mvn clean test jacoco:report
-
-      # On le publie dans les artefacts
-      - name: Upload code coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: target/site/jacoco/
-
-      # On vérifie ensuite si la couverture de code est suffisante
-      # Le taux de couverture de code minimal est défini dans le pom.xml
-      # Si il est trop faible, on renvoie une erreur
-      - name: Check code coverage
-        id: check-coverage
-        run: mvn clean verify jacoco:report || echo "::error line=1::Coverage checks have not been met"
-
-  publish-package:
-    # On publie les packages si les tests sont passés
-    needs: run-tests-and-coverage # Action nécessaire pour exécuter celle ci
-    # Image docker
-    runs-on: ubuntu-latest
-    # On va devoir push le package, donc on demande les permission nécessaire
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      # Vérification usuelle
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      # Installation de JAVA
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: 'adopt'
-
-      # On publie le package grâce à l'URL définie dans le pom.xml
-      # On lui donne un token de compte défini dans les sercrets du repertoire Github
-      - name: Publish package
-        run: mvn --batch-mode deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
-
-  deploy-documentation:
-    # Mise à jour de la documentation
-    needs: run-tests-and-coverage # Action nécessaire pour éxecuter celle ci
-    runs-on: ubuntu-latest # Image docker
-    steps:
-      # Vérification usuelles
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Install Doxygen
-        run: |
-          sudo apt-get update
-          sudo apt-get install doxygen
-
-      # On exécute Doxygen grâce à l'action de mattnotmitt (cf : ./README.md)
-      - name: Run Doxygen
-        uses: mattnotmitt/doxygen-action@v1.2.1
-        with:
-          # These are default values, but included for clarity
-          doxyfile-path: ./Doxyfile
-          working-directory: .
-
-      # On push les pages ainsi créés sur la branche github-pages
-      # Pour cela on utilise le token spécifique du repertoire
-      # Le fichier Doxygen du projet est également paramétré pour suivre ces directives
-      # (cf : ./README.md)
-      - name: Pages Deployment
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/
-          enable_jekyll: false
-          allow_empty_commit: false
-          force_orphan: true
-          publish_branch: github-pages
-
-  deploy-docker:
-    #On déploie notre conteneur docker contenant notre simulation sur DockerHub
-    runs-on: ubuntu-latest #Conteneur docker
-    needs: run-tests-and-coverage # Action nécessaire pour éxecuter celle ci
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK 21
-        uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: maven
-      - name: Build with Maven
-        run: mvn clean install # On fabrique le package grâce à l'étape install du cycle de vie Maven
-
-      - name: Build & push Docker image
-        # Ce plugin du workflow GitHub permet de construire et de publier facilement un conteneur docker
-        uses: mr-smithers-excellent/docker-build-push@v6
-        with:
-          image: skander23000/project_devops_2024
-          tags: latest
-          registry: docker.io
-          dockerfile: Dockerfile
-          # Secret Git pour s'identifier sur DockerHub
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+        - name: Build & push Docker image
+          # Ce plugin du workflow GitHub permet de construire et de publier facilement un conteneur docker
+          uses: mr-smithers-excellent/docker-build-push@v6
+          with:
+            image: skander23000/project_devops_2024
+            tags: latest
+            registry: docker.io
+            dockerfile: Dockerfile
+            # Secret Git pour s'identifier sur DockerHub
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
 
