@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.10.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>RSLM-DevOps: Fonctionnement du cloud</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">RSLM-DevOps<span id="projectnumber">&#160;1.0.0</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.10.0 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche');
+  $(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div><div class="header">
+  <div class="headertitle"><div class="title">Fonctionnement du cloud</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p><a class="anchor" id="autotoc_md27"></a> Pour fonctionner, la partie cloud se base sur 3 outils différents : </p><div class="fragment"><div class="line">gcloud</div>
+<div class="line">terraform</div>
+<div class="line">ansible</div>
+</div><!-- fragment --><p>Ansible ne sera pas explicitement utilisé dans ce tutoriel mais il est interne à l'application.</p>
+<p>Pour installer gcloud, il faut suivre <a href="https://cloud.google.com/sdk/docs/install">ce tuto</a> Il faut également l'initialiser en suivant <a href="https://cloud.google.com/sdk/docs/initializing">ce tuto</a></p>
+<p>Pour installer terraform et ansible (sous debian) les commandes suivantes suffisent</p>
+<div class="fragment"><div class="line">sudo apt install terraform</div>
+<div class="line">sudo apt install ansible</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md28"></a>
+Initialisation du gcloud</h1>
+<p>On commence en créant un projet (défini grâce à son PROJECT_ID) puis on lui ajoute un service. Enfin, on créer un fichier d'informations pour le login. Ce fichier d'information doit se placer dans le dossier terraform</p>
+<div class="fragment"><div class="line">#Fill PROJECT_ID and SERVICE_ID with your informations</div>
+<div class="line">PROJECT_ID=my_project</div>
+<div class="line">SERVICE_ID=my_service</div>
+<div class="line"> </div>
+<div class="line">gcloud projects create $(PROJECT_ID)</div>
+<div class="line">gcloud iam service-accounts create $(SERVICE_ID)</div>
+<div class="line">gcloud projects add-iam-policy-binding rslm-devops --member serviceAccount:$(SERVICE_ID)@$(PROJECT_ID).iam.gserviceaccount.com --role roles/editor</div>
+<div class="line">gcloud iam service-accounts keys create mycredentials.json --iam-account mysvcdevops@PROJECT_ID.iam.gserviceaccount.com</div>
+</div><!-- fragment --><p>Il faut également modifier dans le fichier variables.tf le nom du projet pour mettre PROJECT_ID</p>
+<h1><a class="anchor" id="autotoc_md29"></a>
+Ajout d'une clé SSH</h1>
+<p>Pour pouvoir se connecter à la machine distante, il faut obligatoirement une clé ssh. Récuperez la sortie de cette commande et placez la clé publique ssh dans le fichier simple_deployement.tf.</p>
+<div class="fragment"><div class="line">ssh-keygen -t rsa -b 4096 -f ~/.ssh/cloudkey &amp;&amp; cat ~/.ssh/cloudkey.pub</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md30"></a>
+Lancement de la machine virtuelle</h1>
+<p>Si tout s'est bien déroulé, vous devriez pouvoir lancer les commandes suivantes</p>
+<div class="fragment"><div class="line">terraform init</div>
+<div class="line"> </div>
+<div class="line"># Vérifiez ce que va faire la machine virtuelle</div>
+<div class="line">terraform plan</div>
+<div class="line"> </div>
+<div class="line"># Lancement de la machine virtuelle</div>
+<div class="line">terraform apply -auto-approve -destroy</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md31"></a>
+Arrêt de la machine virtuelle</h1>
+<p>Attention, la VM ne s'arrête pas toute seule et elle peux consommer encore des crédits. Pour l'arrêter suivez les étapes suivantes</p>
+<div class="fragment"><div class="line"># Repérez l&#39;instance que vous voulez stopper dans la liste</div>
+<div class="line">gcloud compute instances list</div>
+<div class="line"> </div>
+<div class="line"># Arrêt de la machine virtuelle</div>
+<div class="line">gcloud compute instances stop &lt;INSTANCE_NAME&gt;</div>
+</div><!-- fragment --><p> Vous trouverez plus amples information sur <a href="https://cloud.google.com/sdk/gcloud/reference/compute/instances/stop">la documentation</a></p>
+<p>Il sera nécessaire de relancer l'instance lorsque vous voudrez reprendre avec les commandes suivantes :</p>
+<div class="fragment"><div class="line"># Repérez l&#39;instance que vous voulez stopper dans la liste</div>
+<div class="line">gcloud compute instances list</div>
+<div class="line"> </div>
+<div class="line"># Démmarage de la machine virtuelle</div>
+<div class="line">gcloud compute instances start &lt;INSTANCE_NAME&gt;</div>
+</div><!-- fragment --><p>Vous trouverez également plus d'information sur <a href="https://cloud.google.com/sdk/gcloud/reference/compute/instances/start">la documentation</a> </p>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Généré par&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+</small></address>
+</body>
+</html>
