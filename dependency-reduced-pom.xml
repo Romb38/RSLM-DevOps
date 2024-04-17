@@ -93,16 +93,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <configuration>
-          <mainClass>org.example.Main</mainClass>
-          <arguments>
-            <argument>${csv.file.path}</argument>
-          </arguments>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
   <dependencies>

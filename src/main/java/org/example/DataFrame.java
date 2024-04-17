@@ -190,7 +190,7 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     /**
      * @return String representing the DataFrame in a table format.
      * @brief Display the DataFrame in a well-aligned table format, including predefined indices if available.
-     * @details <pre>Example of result:
+     * @details <pre>Example of the result:
      * +---+----+----+
      * |   | a  | c  |
      * +---+----+----+
