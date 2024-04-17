@@ -19,6 +19,7 @@ jobs:
         env:
           MY_CREDENTIALS_JSON: ${{ secrets.MYCREDENTIALS_JSON }}
 
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
