@@ -12,6 +12,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Set credentials as environment variable
+        run: |
+          cd ./terraform
+          echo "$MY_CREDENTIALS_JSON" > mycredentials.json
+        env:
+          MY_CREDENTIALS_JSON: ${{ secrets.MYCREDENTIALS_JSON }}
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
