@@ -17,6 +17,7 @@ jobs:
         with:
           terraform_version: 1.0.0
           backend-config: '${{ secrets.MYCREDENTIALS_JSON }}'
+          working-directory: ./terraform
 
 
       - name: Terraform apply
