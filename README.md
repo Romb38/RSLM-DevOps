@@ -35,6 +35,9 @@ d'un sous-ensemble d'un Dataframe.
 - séléction à partir d'un critère de valeur sur les colonnes (supérieur, inférieur, égalité)
 
 
+**Selection avancée** :
+permet de filtrer un DataFrame en fonction de critères complexes où pour chaque colonne qui permet de déterminer quelles lignes doivent être conservées.
+
 ## Documentation
 
 Vous trouverez la documentation de ce projet sur [cette page](https://romb38.github.io/rslmdevops/index.html)
@@ -56,6 +59,49 @@ Les fonctionalités de collaboration offertes par Github nous ont permis de mett
 Terraform est un outils de création de machine virtuelle relié à différents services. Nous l'avons utiliser pour déployer des machines virtuelles sur Google Cloud. Il execute également sur la machine un script Ansible. Ce script permet d'installer Docker et lance la simulation que nous avons créé. Ensemble, ils permettent de déployer et de gérer l'infrastructure de manière reproductible et automatisée.
 ### Docker
 Docker nous a permis de créer des conteurs. Cette plateforme offre des avantages pour le déploiement et la gestions des conteneurs, ce qui permet une meilleure portabilité de la bibliothèque. Le Dockerfile configure une image Docker pour une application Java, utilisant openjdk:2 comme image de base. Il définit un répertoire de travail (/app), copie le fichier JAR de l'application et un fichier CSV nécessaires pour l'exécution d'un scénario de notre bibliothèque. L'application est lancée avec le fichier CSV en argument.
+
+# Workflows GitHub Actions
+
+Ce dépôt contient plusieurs workflows configurés avec GitHub Actions pour assurer la qualité du code, automatiser le déploiement et gérer notre infrastructure de manière efficace.
+
+## Aperçu des Workflows
+
+### 1. Exécution des Tests JUnit et Couverture de Code à 80%
+
+Ce workflow est conçu pour s'exécuter automatiquement sur toutes les branches sauf `master` et `github-pages`. Il garantit que chaque modification poussée passe tous les tests unitaires et atteint au moins 80% de couverture de code.
+
+#### Déclencheurs
+- Événements de push sur toutes les branches sauf `master` et `github-pages`.
+
+#### Jobs
+- **Exécution des Tests** : Exécute les tests unitaires en utilisant Maven et continue même si certains tests échouent pour permettre une analyse plus approfondie.
+- **Vérification de la Couverture de Code** : Vérifie si la couverture de code est d'au moins 80%. Si ce n'est pas le cas, le workflow échoue pour empêcher la fusion de code insuffisamment testé.
+
+### 2. Application Terraform
+
+Ce workflow automatise le déploiement de l'infrastructure définie dans les scripts Terraform. Il est crucial pour maintenir des environnements cohérents et sécurisés à travers les phases de développement, de test et de production.
+
+#### Déclencheurs
+- Événements de push sur toutes les branches.
+
+#### Jobs
+- **Application Terraform** : Initialise et applique les configurations Terraform, approuve les changements automatiquement et détruit les déploiements précédents si nécessaire.
+
+### 3. Exécution des Tests, Assurance de 80% de Couverture de Code, et Déploiement de la Documentation
+
+Ce workflow complet gère plusieurs aspects du cycle de vie du développement logiciel. Il est déclenché sous conditions spécifiques pour tester, vérifier la couverture de code, publier de la documentation, et déployer des paquets et des conteneurs.
+
+#### Déclencheurs
+- Événements de push sur la branche `debug/doxygen`.
+- Pull requests sur la branche `master`.
+
+#### Jobs
+- **Exécution des Tests et de la Couverture** : Similaire au premier workflow mais déclenché pour des branches et PR spécifiques.
+- **Publication de Paquet** : Déploie le paquet logiciel maven si les tests et la couverture de code sont satisfaisants.
+- **Déploiement de la Documentation** : Génère et déploie la documentation du projet en utilisant Doxygen.
+- **Déploiement Docker** : Construit et publie une image Docker du projet, facilitant une distribution et un déploiement rapides.
+
+
 
 
 ## Workflow git 
