@@ -2,8 +2,8 @@
 
 Le but de ce projet est de mettre en place une procédure d'intégration continue d'un logiciel.
 
-Nous cherhcons ici à metre en place un maximum d'ouitls, de façon cohérente, pour développer
-une bibliothèque d'analyse de données en Java inspiré par la bibliothèque Pandas.
+Nous cherchons ici à mettre en place un maximum d'outils, de façon cohérente, pour développer
+une bibliothèque d'analyse de données en Java inspirée par la bibliothèque Pandas.
 
 ![badges_tests](https://github.com/Romb38/rslmdevops/actions/workflows/run-test.yml/badge.svg)
 ![badges_maven_deploy](https://github.com/Romb38/rslmdevops/actions/workflows/workflow.yml/badge.svg?branch=master)
@@ -19,7 +19,7 @@ une bibliothèque d'analyse de données en Java inspiré par la bibliothèque Pa
 ## Description des fonctionnalistés
 **Dataframe** : Le type d’objet principal manipulé par RSLM sont les Dataframe. Les Dataframes sont
 des tableaux en deux dimensions où chaque colonne est identifiée par un label et chaque ligne par un
-index. Chaque colonne stocke des données d’un seul type. Cependant deux colonnes différentes peuvent
+index. Chaque colonne stock des données d’un seul type. Cependant deux colonnes différentes peuvent
 stocker des types différents.
 
 **Affichage d’un dataframe** : permet d'afficher les Dataframes. Il exites plusieurs vairantes de cette
@@ -32,7 +32,7 @@ méthode.
 d'un sous-ensemble d'un Dataframe.
 - sélection d'un sous-ensemble de lignes
 - sélection d'un sous-ensemble de colonnes
-- _séléction avancé_
+- séléction à partir d'un critère de valeur sur les colonnes (supérieur, inférieur, égalité)
 
 
 ## Documentation
@@ -61,12 +61,12 @@ Docker nous a permis de créer des conteurs. Cette plateforme offre des avantage
 ## Workflow git 
 ### features branch 
 Nous avons choisi pour procédure la méthode de workflow Features branch. Ce workflow est simple
-à mettre en place est suffisant pour notre projet. Chaque nouvelle fonctionnalités sera développer sur 
-une nouvelle branche. Chaque branchedevra passer les test et sera pull/merge à la suite d'un pull/merge request validé par au moins un autre 
-collaborateurs. _suite explication_
+à mettre en place est suffisant pour notre projet. Chaque nouvelle fonctionnalités sera développée sur 
+une nouvelle branche.
 
 ### Procédure de validation des Pull/Merge requests
-Nous avons choisi pour notre projet que chaque Pull/Merge requests devrait être validés par une personne minimum.
+Chaque branches devra passer les tests et sera pull/merge à la suite d'un pull/merge request validé par au moins un autre 
+collaborateurs. Nous avons choisi pour notre projet que chaque Pull/Merge requests devrait être validés par une personne minimum.
 
 ## Docker
 _liste des images et liens vers le dépot Docker_
