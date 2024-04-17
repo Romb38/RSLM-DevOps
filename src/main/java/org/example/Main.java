@@ -8,18 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.io.IOException;
 
 
 public class Main {
 
     /**
-     * @brief Méthode principale
+     * @brief Méthode principale - présentation des différentes fonctionnalitées de la librairie
      * @details This method is the entry point of the program
      */
     public static void main(String[] args) throws Exception {
-        // WORK IN PROGRESS
         if (args.length > 0) {
             String csvFilePath = args[0];  // Utilisation des arguments de la ligne de commande pour le chemin du fichier
             DataFrame<String, Integer> dataFrame = new DataFrame<>(Paths.get(csvFilePath), ';', String.class, Integer.class);
@@ -97,8 +94,5 @@ public class Main {
                 e.printStackTrace();
             }
         }
-        }
-
     }
-
-
+}

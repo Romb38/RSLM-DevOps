@@ -2,13 +2,14 @@ import com.fasterxml.jackson.dataformat.csv.CsvReadException;
 import org.example.DataFrame;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Predicate;
+
+import static org.junit.Assert.*;
 
 public class DataFrameTest {
 
@@ -50,7 +51,7 @@ public class DataFrameTest {
     @Test
     public void testEmptyColumnStatistics() {
         // Ajouter une colonne vide pour tester le comportement avec des colonnes vides
-        dataFrame.getContent().put("C", Arrays.asList());
+        dataFrame.getContent().put("C", List.of());
         assertNull(dataFrame.min("C"));  // Min devrait retourner null
         assertNull(dataFrame.max("C"));  // Max devrait retourner null
 
@@ -62,6 +63,7 @@ public class DataFrameTest {
         // Tester les calculs sur une colonne qui n'existe pas, devrait lancer une exception
         dataFrame.sum("Z");
     }
+
     @Test
     public void testSumWithNullAndNegativeValues() {
         dataFrame.getContent().put("C", Arrays.asList(-1.0, null, 2.0, -3.0));
@@ -74,6 +76,7 @@ public class DataFrameTest {
         dataFrame.getContent().put("C", Arrays.asList(null, null, 2.0, null, 4.0));
         assertEquals(3.0, dataFrame.average("C"), 0.001);  // Teste la moyenne avec des valeurs null
     }
+
     @Test
     public void testSelectAdvanced() throws Exception {
         Map<String, Predicate<Double>> criteria = new HashMap<>();
@@ -89,6 +92,7 @@ public class DataFrameTest {
         assertEquals(expectedA, result.getContent().get("A"));
         assertEquals(expectedB, result.getContent().get("B"));
     }
+
     @Test(expected = Exception.class)
     public void testSelectAdvancedWithInvalidHeader() throws Exception {
         // Passer un en-tête qui n'existe pas devrait lancer une exception
@@ -149,7 +153,7 @@ public class DataFrameTest {
         rowList.add(Arrays.asList(4, 5, 6));
         rowList.add(Arrays.asList(7, 8, 9));
 
-        DataFrame<String, Integer> dataFrame = new DataFrame<>(header,rowList, String.class, Integer.class);
+        DataFrame<String, Integer> dataFrame = new DataFrame<>(header, rowList, String.class, Integer.class);
     }
 
     @Test
@@ -195,13 +199,13 @@ public class DataFrameTest {
                 Arrays.asList(4, 5, 6)
         );
         DataFrame<String, Integer> df = new DataFrame<>(header, rows, String.class, Integer.class);
-        String expected = "+---+---+---+\n" +
-                "| A | B | C |\n" +
-                "+---+---+---+\n" +
-                "| 1 | 2 | 3 |\n" +
-                "+---+---+---+\n" +
-                "| 4 | 5 | 6 |\n" +
-                "+---+---+---+\n";
+        String expected = "+---+---+---+" + System.lineSeparator() +
+                "| A | B | C |" + System.lineSeparator() +
+                "+---+---+---+" + System.lineSeparator() +
+                "| 1 | 2 | 3 |" + System.lineSeparator() +
+                "+---+---+---+" + System.lineSeparator() +
+                "| 4 | 5 | 6 |" + System.lineSeparator() +
+                "+---+---+---+" + System.lineSeparator();
         assertEquals(expected, df.toStringDisplay());
     }
 
@@ -216,20 +220,20 @@ public class DataFrameTest {
                 Arrays.asList(10, 11, 12)
         );
         DataFrame<String, Integer> df = new DataFrame<>(header, rows, String.class, Integer.class);
-        String expectedFirst2Lines = "------------------------\n" +
-                "|\tA\t|\tB\t|\tC\t|\n" +
-                "------------------------\n" +
-                "|\t1\t|\t2\t|\t3\t|\n" +
-                "------------------------\n" +
-                "|\t4\t|\t5\t|\t6\t|\n" +
-                "------------------------\n";
-        String expectedLast2Lines = "------------------------\n" +
-                "|\tA\t|\tB\t|\tC\t|\n" +
-                "------------------------\n" +
-                "|\t7\t|\t8\t|\t9\t|\n" +
-                "------------------------\n" +
-                "|\t10\t|\t11\t|\t12\t|\n" +
-                "------------------------\n";
+        String expectedFirst2Lines = "+---+---+---+" + System.lineSeparator() +
+                "| A | B | C |" + System.lineSeparator() +
+                "+---+---+---+" + System.lineSeparator() +
+                "| 1 | 2 | 3 |" + System.lineSeparator() +
+                "+---+---+---+" + System.lineSeparator() +
+                "| 4 | 5 | 6 |" + System.lineSeparator() +
+                "+---+---+---+" + System.lineSeparator();
+        String expectedLast2Lines = "+----+----+----+" + System.lineSeparator() +
+                "| A  | B  | C  |" + System.lineSeparator() +
+                "+----+----+----+" + System.lineSeparator() +
+                "| 7  | 8  | 9  |" + System.lineSeparator() +
+                "+----+----+----+" + System.lineSeparator() +
+                "| 10 | 11 | 12 |" + System.lineSeparator() +
+                "+----+----+----+" + System.lineSeparator();
         assertEquals(expectedFirst2Lines, df.toStringPartialDisplay(2, true));
         assertEquals(expectedLast2Lines, df.toStringPartialDisplay(2, false));
     }
@@ -246,13 +250,13 @@ public class DataFrameTest {
         Integer[] indexes = {0, 2}; // Définir des index
         DataFrame<String, Integer> df = new DataFrame<>(header, rows, String.class, Integer.class);
         df.setIndexes(indexes); // Configurer les index
-        String expected = "--------------------------------\n" +
-                "|\t \t|\tA\t|\tB\t|\tC\t|\n" +
-                "--------------------------------\n" +
-                "|\t0\t|\t1\t|\t2\t|\t3\t|\n" +
-                "--------------------------------\n" +
-                "|\t2\t|\t4\t|\t5\t|\t6\t|\n" +
-                "--------------------------------\n";
+        String expected = "+---+---+---+---+" + System.lineSeparator() +
+                "|   | A | B | C |" + System.lineSeparator() +
+                "+---+---+---+---+" + System.lineSeparator() +
+                "| 0 | 1 | 2 | 3 |" + System.lineSeparator() +
+                "+---+---+---+---+" + System.lineSeparator() +
+                "| 2 | 4 | 5 | 6 |" + System.lineSeparator() +
+                "+---+---+---+---+" + System.lineSeparator();
         assertEquals(expected, df.toStringDisplayByIndex(indexes));
     }
 
@@ -265,7 +269,7 @@ public class DataFrameTest {
                 Arrays.asList(4, 5, 6)
         );
         DataFrame<String, Integer> df = new DataFrame<>(header, rows, String.class, Integer.class);
-        assertEquals(Integer.valueOf(1), df.getContent().get("A").get(0));
+        assertEquals(Integer.valueOf(1), df.getContent().get("A").getFirst());
         assertEquals(Integer.valueOf(5), df.getContent().get("B").get(1));
     }
 
@@ -292,15 +296,15 @@ public class DataFrameTest {
         );
         DataFrame<String, Integer> df = new DataFrame<>(header, rows, String.class, Integer.class);
         List<String> newHeader = Arrays.asList("B", "C");
-        String expected = "----------------\n" +
-                "|\tB\t|\tC\t|\n" +
-                "----------------\n" +
-                "|\t2\t|\t3\t|\n" +
-                "----------------\n" +
-                "|\t5\t|\t6\t|\n" +
-                "----------------\n" +
-                "|\t8\t|\t9\t|\n" +
-                "----------------\n";
+        String expected = "+---+---+" + System.lineSeparator() +
+                "| B | C |" + System.lineSeparator() +
+                "+---+---+" + System.lineSeparator() +
+                "| 2 | 3 |" + System.lineSeparator() +
+                "+---+---+" + System.lineSeparator() +
+                "| 5 | 6 |" + System.lineSeparator() +
+                "+---+---+" + System.lineSeparator() +
+                "| 8 | 9 |" + System.lineSeparator() +
+                "+---+---+" + System.lineSeparator();
         assertEquals(expected, df.toStringDisplayByHeader(newHeader));
     }
 
@@ -324,7 +328,7 @@ public class DataFrameTest {
                 Arrays.asList(7, 8, 9)
         );
         DataFrame<String, Integer> df = new DataFrame<>(header, rows, String.class, Integer.class);
-        assertEquals(Integer.valueOf(2), df.getContent().get("B").get(0)); // Accès par index 0
+        assertEquals(Integer.valueOf(2), df.getContent().get("B").getFirst()); // Accès par index 0
         assertEquals(Integer.valueOf(9), df.getContent().get("C").get(2)); // Accès par index 2
 
 
@@ -338,12 +342,9 @@ public class DataFrameTest {
                 Arrays.asList(4, 5, 6)
         );
         DataFrame<String, Integer> df = new DataFrame<>(header, rows, String.class, Integer.class);
-        String expected = "------------------------\n" +
-                "|\tA\t|\tB\t|\tC\t|\n" +
-                "------------------------\n";
+        String expected = "+---+---+---+" + System.lineSeparator() +
+                "| A | B | C |" + System.lineSeparator() +
+                "+---+---+---+" + System.lineSeparator();
         assertEquals(expected, df.toStringPartialDisplay(-1, true)); // Nombre négatif de lignes
     }
-
-
-
 }
