@@ -3,10 +3,7 @@ package org.example;
 
 
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 
 
@@ -22,12 +19,18 @@ public class Main {
             DataFrame<String, Integer> dataFrame = new DataFrame<>(Paths.get(csvFilePath), ';', String.class, Integer.class);
 
             if (dataFrame.getContent().containsKey("a")) {
-                System.out.println("\n Statistics for column 'a':");
+                System.out.println("\nStatistics for column 'a':");
                 System.out.println("Sum: " + dataFrame.sum("a"));
                 System.out.println("Average: " + dataFrame.average("a"));
-                System.out.println("Min: " + dataFrame.min("a"));
-                System.out.println("Max: " + dataFrame.max("a"));
+
+                // Créer un Comparator pour le type Integer
+                Comparator<Integer> integerComparator = Comparator.naturalOrder();
+
+                // Passer le Comparator aux méthodes min et max
+                System.out.println("Min: " + dataFrame.min("a", integerComparator));
+                System.out.println("Max: " + dataFrame.max("a", integerComparator));
             }
+
 
             System.out.println("\n Result: ");
             System.out.println(dataFrame.toStringDisplay());

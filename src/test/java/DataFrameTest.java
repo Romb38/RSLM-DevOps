@@ -38,25 +38,29 @@ public class DataFrameTest {
 
     @Test
     public void testMin() {
-        assertEquals(Double.valueOf(1.0), dataFrame.min("A"));
-        assertEquals(Double.valueOf(2.0), dataFrame.min("B"));
+        Comparator<Double> doubleComparator = Comparator.naturalOrder();
+        assertEquals(Double.valueOf(1.0), dataFrame.min("A", doubleComparator));
+        assertEquals(Double.valueOf(2.0), dataFrame.min("B", doubleComparator));
     }
 
     @Test
     public void testMax() {
-        assertEquals(Double.valueOf(4.0), dataFrame.max("A"));
-        assertEquals(Double.valueOf(5.0), dataFrame.max("B"));
+        Comparator<Double> doubleComparator = Comparator.naturalOrder();
+        assertEquals(Double.valueOf(4.0), dataFrame.max("A", doubleComparator));
+        assertEquals(Double.valueOf(5.0), dataFrame.max("B", doubleComparator));
     }
 
     @Test
     public void testEmptyColumnStatistics() {
         // Ajouter une colonne vide pour tester le comportement avec des colonnes vides
-        dataFrame.getContent().put("C", List.of());
-        assertNull(dataFrame.min("C"));  // Min devrait retourner null
-        assertNull(dataFrame.max("C"));  // Max devrait retourner null
+        dataFrame.getContent().put("C", Collections.emptyList());
+        Comparator<Double> doubleComparator = Comparator.naturalOrder();
+        assertNull(dataFrame.min("C", doubleComparator));  // Min devrait retourner null
+        assertNull(dataFrame.max("C", doubleComparator));  // Max devrait retourner null
 
         assertTrue(Double.isNaN(dataFrame.average("C")));
     }
+
 
     @Test(expected = Exception.class)
     public void testNonExistentColumn() {

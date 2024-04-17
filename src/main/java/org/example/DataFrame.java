@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * @param <T> Content type
  * @brief Data manipulation library
  */
-public class DataFrame<H, T extends Number & Comparable<T>> {
+public class DataFrame<H, T extends Number > {
     private final Class<T> classParameterT;
     private final Class<H> classParameterH;
     private Integer[] indexes;
@@ -27,7 +27,7 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     /**
      * @param path file path
      * @throws IOException If unable to open the file
-     * @brief Read CSV file for a given file path
+     *  @brief Read CSV file for a given file path
      * @details Note: csv default delimiter character is `;`
      */
     public DataFrame(Path path, Character csvDelimiter, Class<H> classParameterH, Class<T> classParameterT) throws IOException {
@@ -578,21 +578,23 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
      * @param header selected column
      * @brief Find minimum value in a column
      */
-    public T min(H header) {
+    public T min(H header, Comparator<T> comparator) {
         return this.getContent().get(header).stream()
-                .min(Comparator.naturalOrder())
+                .min(comparator)
                 .orElse(null);  // Retourne null si la colonne est vide
     }
+
 
     /**
      * @param header selected column
      * @brief Find maximum value in a column
      */
-    public T max(H header) {
+    public T max(H header, Comparator<T> comparator) {
         return this.getContent().get(header).stream()
-                .max(Comparator.naturalOrder())
+                .max(comparator)
                 .orElse(null);  // Retourne null si la colonne est vide
     }
+
 
     /**
      * @param criteria Map of headers to their respective predicates for selection.
