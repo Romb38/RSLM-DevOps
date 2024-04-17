@@ -93,20 +93,16 @@
       needs: run-tests-and-coverage # Action nécessaire pour éxecuter celle ci
       runs-on: ubuntu-latest # Image docker
       steps:
-        # Vérification usuelles
         - name: Checkout
           uses: actions/checkout@v2
+          with:
+            ref: master
+
 
         - name: Install Doxygen
           run: |
             sudo apt-get update
             sudo apt-get install doxygen
-
-
-        # Extraire les fichiers de la branche master
-        - name: Checkout master branch
-          run: git checkout master
-
 
         # On exécute Doxygen grâce à l'action de mattnotmitt (cf : ./README.md)
         - name: Run Doxygen
