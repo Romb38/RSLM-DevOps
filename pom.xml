@@ -113,18 +113,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- Plugin exec-maven-plugin pour passer le chemin du CSV à l'application -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>org.example.Main</mainClass>
-                    <arguments>
-                        <argument>${csv.file.path}</argument>
-                    </arguments>
-                </configuration>
-            </plugin>
         </plugins>
 
         <finalName>project_devops_2024</finalName>

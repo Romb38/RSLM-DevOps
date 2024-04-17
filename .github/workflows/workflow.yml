@@ -4,10 +4,8 @@ name: Run Tests, Ensure 80% Code Coverage, and Deploy Documentation
 on:
   push:
     branches:
-      - master
-  pull_request:
-    branches:
-      - master
+      - "master"
+
 
 jobs:
   run-tests-and-coverage:
@@ -97,6 +95,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Install Doxygen
+        run: |
+          sudo apt-get update
+          sudo apt-get install doxygen
+
       # On exécute Doxygen grâce à l'action de mattnotmitt (cf : ./README.md)
       - name: Run Doxygen
         uses: mattnotmitt/doxygen-action@v1.2.1
@@ -113,7 +116,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./html/docs
+          publish_dir: ./docs/
           enable_jekyll: false
           allow_empty_commit: false
           force_orphan: true
