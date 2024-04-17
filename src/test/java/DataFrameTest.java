@@ -17,7 +17,7 @@ public class DataFrameTest {
 
     @Before
     public void setUp() {
-        // Initialiser le DataFrame avec quelques données
+        // Initialiser le DataFrame avec quelques données :)
         HashMap<String, List<Double>> content = new HashMap<>();
         content.put("A", Arrays.asList(1.0, 2.0, 3.0, 4.0));
         content.put("B", Arrays.asList(2.0, 3.0, 4.0, 5.0));
