@@ -2,9 +2,7 @@ name: Run Tests, Ensure 80% Code Coverage, and Deploy Documentation
 
 #Ne se fait que lorsqu'on push sur la branche master (aussi lors de la validation d'une pull request)
 on:
-  push:
-    branches:
-      - master
+  push
 
 jobs:
   run-tests-and-coverage:
