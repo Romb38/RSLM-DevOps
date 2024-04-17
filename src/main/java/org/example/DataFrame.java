@@ -20,11 +20,10 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
 
 
     /**
-     * Read CSV file for a given file path
-     * Note: csv default delimiter character is `;`
-     *
      * @param path file path
      * @throws IOException If unable to open the file
+     * @brief Read CSV file for a given file path
+     * @details Note: csv default delimiter character is `;`
      */
     public DataFrame(Path path, Character csvDelimiter, Class<H> classParameterH, Class<T> classParameterT) throws IOException {
         this.classParameterT = classParameterT;
@@ -60,21 +59,19 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     }
 
     /**
-     * Read CSV file for a given file path
-     * Note: csv default delimiter character is `;`
-     *
      * @param path file path
      * @throws IOException If unable to open the file
+     * @brief Read CSV file for a given file path
+     * @details Note: csv default delimiter character is `;`
      */
     public DataFrame(Path path, Class<H> classParameterH, Class<T> classParameterT) throws IOException {
         this(path, ';', classParameterH, classParameterT);
     }
 
     /**
-     * Build a DataFrame from header and rows
-     *
      * @param header list of header to declare
      * @param rows   list of rows to declare
+     * @brief Build a DataFrame from header and rows
      */
     public DataFrame(List<H> header, List<List<T>> rows, Class<H> classParameterH, Class<T> classParameterT) {
         this.classParameterT = classParameterT;
@@ -93,10 +90,9 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
 
 
     /**
-     * Build a DataFrame from content Map and indexes
-     *
      * @param content Data frame content shaped has a map
      * @param indexes Data frame indexes
+     * @brief Build a DataFrame from content Map and indexes
      */
     public DataFrame(HashMap<H, List<T>> content, Integer[] indexes, Class<H> classParameterH, Class<T> classParameterT) {
         this.classParameterT = classParameterT;
@@ -106,9 +102,8 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     }
 
     /**
-     * Build a DataFrame from content Map
-     *
      * @param content Data frame content shaped has a map
+     * @brief Build a DataFrame from content Map
      */
     public DataFrame(HashMap<H, List<T>> content, Class<H> classParameterH, Class<T> classParameterT) {
         this.classParameterT = classParameterT;
@@ -117,46 +112,42 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     }
 
     /**
-     * Getter for the DataFrame index array
-     *
      * @return indexes array
+     * @brief Getter for the DataFrame index array
      */
     public Integer[] getIndexes() {
         return indexes;
     }
 
     /**
-     * Setter for the DataFrale index array
      * @param indexes array
+     * @brief Setter for the DataFrame index array
      */
     public void setIndexes(Integer[] indexes) {
         this.indexes = indexes;
     }
 
     /**
-     * Getter for the DataFrame content map
-     *
      * @return map of element by column header
+     * @brief Getter for the DataFrame content map
      */
     public HashMap<H, List<T>> getContent() {
         return content;
     }
 
     /**
-     * Setter for the DataFrame Content map
-     *
      * @param content map of element by column header
+     * @brief Setter for the DataFrame Content map
      */
     public void setContent(HashMap<H, List<T>> content) {
         this.content = content;
     }
 
     /**
-     * Select a part of the current DataFrame by using indexes and return a new DataFrame
-     *
      * @param indexes to filter on
      * @return selected DataFrame
      * @throws Exception Bad index selection
+     * @brief Select a part of the current DataFrame by using indexes and return a new DataFrame
      */
     public DataFrame<H, T> selectDataFrameByIndex(Integer[] indexes) throws Exception {
         checkIndexInput(indexes);
@@ -174,11 +165,10 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     }
 
     /**
-     * Select a part of the current DataFrame by using columns and return a new DataFrame
-     *
      * @param columns to filter on
      * @return selected DataFrame
      * @throws Exception Bad column selection
+     * @brief Select a part of the current DataFrame by using columns and return a new DataFrame
      */
     public DataFrame<H, T> selectDataFrameByColumn(List<H> columns) throws Exception {
         checkHeaderInput(columns);
@@ -193,9 +183,16 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     }
 
     /**
-     * Display the DataFrame in a well-aligned table format, including predefined indices if available.
-     *
      * @return String representing the DataFrame in a table format.
+     * @brief Display the DataFrame in a well-aligned table format, including predefined indices if available.
+     * @details <pre>Example of result:
+     * +---+----+----+
+     * |   | a  | c  |
+     * +---+----+----+
+     * | 1 | 10 | 30 |
+     * +---+----+----+
+     * | 2 | 15 | 35 |
+     * +---+----+----+</pre>
      */
     public String toStringDisplay() {
         // Calculate the maximum width for each column based on header and data
@@ -246,12 +243,11 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     }
 
     /**
-     * Builds the delimiter line for the table based on column widths, including index if exists.
-     *
      * @param builder      StringBuilder to which the delimiter line is appended.
      * @param columnWidths Map with the widths for each column.
      * @param indexWidth   Width of the index column, if indices are used.
      * @param hasIndex     Boolean indicating if indices are present.
+     * @brief Builds the delimiter line for the table based on column widths, including index if exists.
      */
     private void buildTableDelimiter(StringBuilder builder, Map<H, Integer> columnWidths, int indexWidth, boolean hasIndex) {
         builder.append("+");
@@ -265,17 +261,16 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     }
 
     /**
-     * Display in a table the given dataframe for the given indexes
-     * Example of result:
+     * @return String result to display
+     * @brief Display in a table the given dataframe for the given indexes
+     * @details <pre>Example of result:
      * +---+----+----+
      * |   | a  | c  |
      * +---+----+----+
      * | 1 | 10 | 30 |
      * +---+----+----+
      * | 2 | 15 | 35 |
-     * +---+----+----+
-     *
-     * @return String result to display
+     * +---+----+----+</pre>
      */
     public String toStringDisplayByIndex(Integer[] indexes) throws Exception {
         checkIndexInput(indexes);
@@ -325,26 +320,24 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     }
 
     /**
-     * Retrieve max the String length of the current index
-     *
      * @return max index string length
+     * @brief Retrieve max the String length of the current index
      */
     private int getIndexWidth() {
         return Arrays.stream(this.getIndexes()).map(Object::toString).max(Comparator.comparingInt(String::length)).orElse("").length();
     }
 
     /**
-     * Display in a table the given dataframe for the given indexes
-     * Example of result:
+     * @return String result to display
+     * @brief Display in a table the given dataframe for the given indexes
+     * @details <pre>Example of result:
      * +---+----+----+
      * |   | a  | c  |
      * +---+----+----+
      * | 1 | 10 | 30 |
      * +---+----+----+
      * | 2 | 15 | 35 |
-     * +---+----+----+
-     *
-     * @return String result to display
+     * +---+----+----+</pre>
      */
     public String toStringDisplayByHeader(List<H> columnFilter) throws Exception {
         checkHeaderInput(columnFilter);
@@ -396,19 +389,18 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     }
 
     /**
-     * Display in a table the given dataframe
-     * Example of result:
-     * ------------------
-     * |    a   |   b   |
-     * ------------------
-     * |    1   |   2   |
-     * ------------------
-     * |    5   |   9   |
-     * ------------------
-     *
      * @param nbLines number of lines to display
      * @param mode    true = first n lines // false = last n lines
      * @return String result to display
+     * @brief Display in a table the given dataframe
+     * @details <pre>Example of result:
+     * +---+----+----+
+     * |   | a  | c  |
+     * +---+----+----+
+     * | 1 | 10 | 30 |
+     * +---+----+----+
+     * | 2 | 15 | 35 |
+     * +---+----+----+</pre>
      */
     public String toStringPartialDisplay(int nbLines, boolean mode) {
         if (nbLines < 0)
@@ -461,19 +453,17 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     }
 
     /**
-     * Check if the current DataFrame index are initialised
-     *
      * @return true if the index array isn't null nor empty
+     * @brief Check if the current DataFrame index are initialised
      */
     public boolean hasIndex() {
         return this.getIndexes() != null && this.getIndexes().length > 0;
     }
 
     /**
-     * Run a checklist to verify the array of index compare to the saved index array
-     *
      * @param indexes array to check
      * @throws Exception check failed with reason
+     * @brief Run a checklist to verify the array of index compare to the saved index array
      */
     private void checkIndexInput(Integer[] indexes) throws Exception {
         if (indexes == null) throw new Exception("Given index can't be null");
@@ -489,10 +479,9 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     }
 
     /**
-     * Run a checklist to verify the list of header compare to the saved header
-     *
      * @param header list to check
      * @throws Exception check failed with reason
+     * @brief Run a checklist to verify the list of header compare to the saved header
      */
     private void checkHeaderInput(List<H> header) throws Exception {
         if (header == null) throw new Exception("Given header can't be null");
@@ -506,11 +495,10 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     }
 
     /**
-     * Get index at referenced position
-     *
      * @param indexes list of index
-     * @param i current position
+     * @param i       current position
      * @return found index at position, null otherwise
+     * @brief Get index at referenced position
      */
     private Integer retrieveIndexWhenAtDataFramePosition(Integer[] indexes, int i) {
         for (Integer index : indexes) {
@@ -557,9 +545,8 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     }
 
     /**
-     * Calculate sum of a column
-     *
      * @param header selected column
+     * @brief Calculate sum of a column
      */
     public double sum(H header) {
         return this.getContent().get(header).stream()
@@ -570,9 +557,8 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
 
 
     /**
-     * Calculate average of a column
-     *
      * @param header selected column
+     * @brief Calculate average of a column
      */
     public double average(H header) {
         return this.getContent().get(header).stream()
@@ -584,9 +570,8 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
 
 
     /**
-     * Find minimum value in a column
-     *
      * @param header selected column
+     * @brief Find minimum value in a column
      */
     public T min(H header) {
         return this.getContent().get(header).stream()
@@ -595,9 +580,8 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     }
 
     /**
-     * Find maximum value in a column
-     *
      * @param header selected column
+     * @brief Find maximum value in a column
      */
     public T max(H header) {
         return this.getContent().get(header).stream()
@@ -606,11 +590,10 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
     }
 
     /**
-     * Advanced selection based on custom predicates per column that filters entire rows.
-     *
      * @param criteria Map of headers to their respective predicates for selection.
      * @return A new DataFrame with only the rows that match all the criteria for any mentioned column.
      * @throws Exception If there are issues with the headers.
+     * @brief Advanced selection based on custom predicates per column that filters entire rows.
      */
     public DataFrame<H, T> selectAdvanced(Map<H, Predicate<T>> criteria) throws Exception {
         if (criteria == null || criteria.isEmpty()) {
@@ -656,6 +639,4 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
             return new DataFrame<>(filteredContent, classParameterH, classParameterT);
         }
     }
-
 }
-
