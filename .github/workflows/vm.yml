@@ -1,9 +1,8 @@
 name: Terraform Apply
 
 on:
-  push:
-    branches:
-      - main
+  push
+
 
 jobs:
   terraform_apply:
