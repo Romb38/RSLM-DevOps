@@ -45,7 +45,7 @@ Maven associés à différents plugin nous a permis d'organiser la gestion de ce
 #### JUnit (v4.13.2) 
 Nous avons mis en place les tests unitaires de notre bibliothèque à l'aide de JUnit. Cet outils nous a permis d'automatiser les tests et les rapports de tests.
 #### Jackson Mapper
-Nous nous sommes servi de la bibliothèque Jackson Mapper pour la manipulation des données JSON.
+Nous nous sommes servi de la bibliothèque Jackson Mapper pour la déserialisation des données CSV.
 #### Doxygen-Maven-Plugin
 Le plugin Doxygen-Maven nous a permis de mettre en place la documentation automatique de notre bibliothèque.
 #### JaCoCo
