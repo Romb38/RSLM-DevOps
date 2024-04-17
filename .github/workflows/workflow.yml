@@ -92,6 +92,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Install Doxygen
+        run: |
+          sudo apt-get update
+          sudo apt-get install doxygen
+
       # On exécute Doxygen grâce à l'action de mattnotmitt (cf : ./README.md)
       - name: Run Doxygen
         uses: mattnotmitt/doxygen-action@v1.2.1
