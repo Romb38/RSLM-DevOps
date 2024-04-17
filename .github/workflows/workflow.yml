@@ -4,7 +4,7 @@ name: Run Tests, Ensure 80% Code Coverage, and Deploy Documentation
 on:
   push:
     branches:
-      - "master"
+      - "debug/doxygen"
   pull_request:
     branches:
       - "master"
@@ -110,6 +110,7 @@ jobs:
           # These are default values, but included for clarity
           doxyfile-path: ./Doxyfile
           working-directory: .
+          branch: "master"
 
       # On push les pages ainsi créés sur la branche github-pages
       # Pour cela on utilise le token spécifique du repertoire
