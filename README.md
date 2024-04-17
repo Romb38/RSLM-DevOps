@@ -55,7 +55,7 @@ Les fonctionalités de collaboration offertes par Github nous ont permis de mett
 ### Terraform et Ansible
 Terraform est un outils de création de machine virtuelle relié à différents services. Nous l'avons utiliser pour déployer des machines virtuelles sur Google Cloud. Il execute également sur la machine un script Ansible. Ce script permet d'installer Docker et lance la simulation que nous avons créé. Ensemble, ils permettent de déployer et de gérer l'infrastructure de manière reproductible et automatisée.
 ### Docker
-Docker nous a permis de créer des conteurs. Cette plateforme offre des avantages pour le déploiement et la gestions des conteneurs, ce qui permet une meilleure portabilité de la bibliothèque.
+Docker nous a permis de créer des conteurs. Cette plateforme offre des avantages pour le déploiement et la gestions des conteneurs, ce qui permet une meilleure portabilité de la bibliothèque. Le Dockerfile configure une image Docker pour une application Java, utilisant openjdk:2 comme image de base. Il définit un répertoire de travail (/app), copie le fichier JAR de l'application et un fichier CSV nécessaires pour l'exécution d'un scénario de notre bibliothèque. L'application est lancée avec le fichier CSV en argument.
 
 
 ## Workflow git 
