@@ -116,22 +116,48 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
         this.setContent(content);
     }
 
+    /**
+     * Getter for the DataFrame index array
+     *
+     * @return indexes array
+     */
     public Integer[] getIndexes() {
         return indexes;
     }
 
+    /**
+     * Setter for the DataFrale index array
+     * @param indexes array
+     */
     public void setIndexes(Integer[] indexes) {
         this.indexes = indexes;
     }
 
+    /**
+     * Getter for the DataFrame content map
+     *
+     * @return map of element by column header
+     */
     public HashMap<H, List<T>> getContent() {
         return content;
     }
 
+    /**
+     * Setter for the DataFrame Content map
+     *
+     * @param content map of element by column header
+     */
     public void setContent(HashMap<H, List<T>> content) {
         this.content = content;
     }
 
+    /**
+     * Select a part of the current DataFrame by using indexes and return a new DataFrame
+     *
+     * @param indexes to filter on
+     * @return selected DataFrame
+     * @throws Exception Bad index selection
+     */
     public DataFrame<H, T> selectDataFrameByIndex(Integer[] indexes) throws Exception {
         checkIndexInput(indexes);
         HashMap<H, List<T>> content = new HashMap<>(this.getContent().entrySet().stream()
@@ -147,6 +173,13 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
         return new DataFrame<>(content, indexes, classParameterH, classParameterT);
     }
 
+    /**
+     * Select a part of the current DataFrame by using columns and return a new DataFrame
+     *
+     * @param columns to filter on
+     * @return selected DataFrame
+     * @throws Exception Bad column selection
+     */
     public DataFrame<H, T> selectDataFrameByColumn(List<H> columns) throws Exception {
         checkHeaderInput(columns);
         HashMap<H, List<T>> content = new HashMap<>(this.getContent().entrySet().stream()
@@ -158,8 +191,6 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
             return new DataFrame<>(content, classParameterH, classParameterT);
 
     }
-
-    //here
 
     /**
      * Display the DataFrame in a well-aligned table format, including predefined indices if available.
@@ -179,7 +210,7 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
 
         StringBuilder builder = new StringBuilder();
         boolean hasIndex = hasIndex();
-        int indexWidth = hasIndex ? Arrays.stream(this.indexes).map(Object::toString).max(Comparator.comparingInt(String::length)).orElse("").length() : 0;
+        int indexWidth = hasIndex ? Arrays.stream(this.getIndexes()).map(Object::toString).max(Comparator.comparingInt(String::length)).orElse("").length() : 0;
 
         // Build the table delimiter with or without index
         buildTableDelimiter(builder, columnWidths, indexWidth, hasIndex);
@@ -293,6 +324,11 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
         return builder.toString();
     }
 
+    /**
+     * Retrieve max the String length of the current index
+     *
+     * @return max index string length
+     */
     private int getIndexWidth() {
         return Arrays.stream(this.getIndexes()).map(Object::toString).max(Comparator.comparingInt(String::length)).orElse("").length();
     }
@@ -424,10 +460,21 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
         return builder.toString();
     }
 
+    /**
+     * Check if the current DataFrame index are initialised
+     *
+     * @return true if the index array isn't null nor empty
+     */
     public boolean hasIndex() {
         return this.getIndexes() != null && this.getIndexes().length > 0;
     }
 
+    /**
+     * Run a checklist to verify the array of index compare to the saved index array
+     *
+     * @param indexes array to check
+     * @throws Exception check failed with reason
+     */
     private void checkIndexInput(Integer[] indexes) throws Exception {
         if (indexes == null) throw new Exception("Given index can't be null");
         if (indexes.length == 0) throw new Exception("Given index can't be empty");
@@ -441,6 +488,12 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
         }
     }
 
+    /**
+     * Run a checklist to verify the list of header compare to the saved header
+     *
+     * @param header list to check
+     * @throws Exception check failed with reason
+     */
     private void checkHeaderInput(List<H> header) throws Exception {
         if (header == null) throw new Exception("Given header can't be null");
         if (header.isEmpty()) throw new Exception("Given header can't be empty");
@@ -452,6 +505,13 @@ public class DataFrame<H, T extends Number & Comparable<T>> {
             throw new Exception("Not existing header value given");
     }
 
+    /**
+     * Get index at referenced position
+     *
+     * @param indexes list of index
+     * @param i current position
+     * @return found index at position, null otherwise
+     */
     private Integer retrieveIndexWhenAtDataFramePosition(Integer[] indexes, int i) {
         for (Integer index : indexes) {
             if (ArrayUtils.indexOf(this.getIndexes(), index) == i) return index;
